@@ -115,7 +115,15 @@ exports.startMatch = async (req, res) => {
 exports.endMatch = async (req, res) => {
   try {
     const { winners } = req.body;
-    const match = await Match.findByIdAndUpdate(
+    
+    // First fetch the match to access its players
+    let match = await Match.findById(req.params.id);
+    if (!match) {
+      return res.status(404).json({ success: false, message: 'Match not found' });
+    }
+
+    // Update match status and players
+    match = await Match.findByIdAndUpdate(
       req.params.id,
       { 
         status: 'completed',
@@ -128,10 +136,6 @@ exports.endMatch = async (req, res) => {
       },
       { new: true }
     );
-
-    if (!match) {
-      return res.status(404).json({ success: false, message: 'Match not found' });
-    }
 
     res.status(200).json({ success: true, data: match });
   } catch (error) {

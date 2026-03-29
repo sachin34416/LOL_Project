@@ -4,6 +4,7 @@ import { useAuthStore } from './store/authStore';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ProtectedRoute from './components/ProtectedRoute';
+import ToastContainer from './components/ToastContainer';
 
 // Auth Pages
 import LoginPage from './pages/LoginPage';
@@ -17,6 +18,8 @@ import GameTemplates from './pages/GameTemplates';
 import MatchScheduling from './pages/MatchScheduling';
 import LiveScoring from './pages/LiveScoring';
 import PlayerStats from './pages/PlayerStats';
+import Leaderboard from './pages/Leaderboard';
+import Analytics from './pages/Analytics';
 import './styles/App.css';
 
 function App() {
@@ -30,6 +33,7 @@ function App() {
 
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
@@ -52,6 +56,8 @@ function App() {
                       <Route path="/games" element={<GameTemplates />} />
                       <Route path="/matches" element={<MatchScheduling />} />
                       <Route path="/live-scoring" element={<LiveScoring />} />
+                      <Route path="/leaderboard" element={<Leaderboard />} />
+                      <Route path="/analytics" element={<Analytics />} />
                       <Route path="/stats/:playerId" element={<PlayerStats />} />
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

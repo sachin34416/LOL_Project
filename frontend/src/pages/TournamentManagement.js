@@ -4,7 +4,16 @@ import { useGameStore } from '../store/gameStore';
 import { usePlayerStore } from '../store/playerStore';
 import { tournamentAPI, gameAPI, playerAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiUsers } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import toastr from 'toastr';
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  progressBar: false,
+  timeOut: 4000,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+};
 
 const TournamentManagement = () => {
   const tournaments = useTournamentStore((state) => state.tournaments);
@@ -55,10 +64,11 @@ const TournamentManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    toastr.clear();
     try {
       const response = await tournamentAPI.createTournament(formData);
       addTournament(response.data.data);
-      toast.success('Tournament created successfully!');
+      toastr.success('Tournament created successfully!');
       setShowModal(false);
       setFormData({
         name: '',
@@ -71,7 +81,7 @@ const TournamentManagement = () => {
         description: '',
       });
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error creating tournament');
+      toastr.error(error.response?.data?.message || 'Error creating tournament');
     }
   };
 
@@ -80,9 +90,9 @@ const TournamentManagement = () => {
       try {
         await tournamentAPI.deleteTournament(id);
         removeTournament(id);
-        toast.success('Tournament deleted!');
+        toastr.success('Tournament deleted!');
       } catch (error) {
-        toast.error('Error deleting tournament');
+        toastr.error('Error deleting tournament');
       }
     }
   };
@@ -94,11 +104,11 @@ const TournamentManagement = () => {
         playerId,
         playerName: player.name,
       });
-      toast.success(`${player.name} registered!`);
+      toastr.success(`${player.name} registered!`);
       setShowRegistrationModal(false);
       fetchAllTournaments();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error registering player');
+      toastr.error(error.response?.data?.message || 'Error registering player');
     }
   };
 

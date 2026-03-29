@@ -1,13 +1,105 @@
 .App {
   display: flex;
   height: 100vh;
-  background-color: #f3f4f6;
+  background: linear-gradient(to bottom, #f0fdf4, #e0f2fe);
 }
 
 .App main {
   flex: 1;
   overflow-y: auto;
-  background-color: #f3f4f6;
+  background: linear-gradient(135deg, #f0fdf4 0%, #f5f3ff 100%);
+}
+
+/* ===== TOASTR - Simplified Custom Styling ===== */
+#toast-container {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  width: 320px !important;
+  z-index: 9999 !important;
+}
+
+#toast-container > div.toast {
+  position: relative !important;
+  margin-bottom: 10px !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 14px 40px 14px 16px !important;
+  background-color: #10b981 !important;
+  color: white !important;
+  min-height: auto !important;
+  display: block !important;
+  word-wrap: break-word !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto !important;
+  opacity: 1 !important;
+}
+
+#toast-container > div.toast.toast-error {
+  background-color: #ef4444 !important;
+}
+
+#toast-container > div.toast.toast-warning {
+  background-color: #f59e0b !important;
+}
+
+#toast-container > div.toast.toast-info {
+  background-color: #3b82f6 !important;
+}
+
+#toast-container > div.toast.toast-success {
+  background-color: #10b981 !important;
+}
+
+/* Hide title completely */
+.toast-title {
+  display: none !important;
+}
+
+/* Show and style message */
+.toast-message {
+  color: white !important;
+  font-weight: 500 !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Hide icons and elements */
+.toast-icon,
+.toast::before,
+.toast::after,
+.toast i {
+  display: none !important;
+}
+
+/* Hide progress bar */
+.toast-progress {
+  display: none !important;
+}
+
+/* Style close button */
+.toast-close-button {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 20px !important;
+  height: 20px !important;
+  background: none !important;
+  border: none !important;
+  color: white !important;
+  font-size: 20px !important;
+  line-height: 20px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+  opacity: 0.7 !important;
+  font-weight: bold !important;
+}
+
+.toast-close-button:hover {
+  opacity: 1 !important;
 }
 
 /* Modal animations */
@@ -19,6 +111,15 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
@@ -53,7 +154,7 @@ button::before {
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.3);
   transform: translate(-50%, -50%);
   transition: width 0.6s, height 0.6s;
 }
@@ -61,4 +162,28 @@ button::before {
 button:active::before {
   width: 300px;
   height: 300px;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Toast animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(400px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slideIn {
+  animation: slideIn 0.3s ease-out;
 }

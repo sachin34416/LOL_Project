@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { usePlayerStore } from '../store/playerStore';
 import { playerAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiSearch } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import toastr from 'toastr';
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  progressBar: false,
+  timeOut: 4000,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+};
 
 const PlayerManagement = () => {
   const players = usePlayerStore((state) => state.players);
@@ -32,21 +41,22 @@ const PlayerManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    toastr.clear();
     try {
       if (editingId) {
         const response = await playerAPI.updatePlayer(editingId, formData);
         updatePlayer(editingId, response.data.data);
-        toast.success('Player updated successfully!');
+        toastr.success('Player updated successfully!');
       } else {
         const response = await playerAPI.registerPlayer(formData);
         addPlayer(response.data.data);
-        toast.success('Player registered successfully!');
+        toastr.success('Player registered successfully!');
       }
       setShowModal(false);
       setFormData({ name: '', email: '', phone: '', avatar: '' });
       setEditingId(null);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error saving player');
+      toastr.error(error.response?.data?.message || 'Error saving player');
     }
   };
 
@@ -66,9 +76,9 @@ const PlayerManagement = () => {
       try {
         await playerAPI.deletePlayer(id);
         removePlayer(id);
-        toast.success('Player deleted successfully!');
+        toastr.success('Player deleted successfully!');
       } catch (error) {
-        toast.error('Error deleting player');
+        toastr.error('Error deleting player');
       }
     }
   };

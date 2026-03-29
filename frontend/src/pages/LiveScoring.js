@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { useMatchStore } from '../store/matchStore';
 import { matchAPI, scoreAPI } from '../services/api';
 import { FiPlus, FiMinus } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import toastr from 'toastr';
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  progressBar: false,
+  timeOut: 4000,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+};
 
 const LiveScoring = () => {
   const upcomingMatches = useMatchStore((state) => state.upcomingMatches);
@@ -37,7 +46,7 @@ const LiveScoring = () => {
 
   const handleStartScoring = async () => {
     if (!selectedMatch) {
-      toast.error('Please select a match');
+      toastr.error('Please select a match');
       return;
     }
 
@@ -49,9 +58,9 @@ const LiveScoring = () => {
         players: selectedMatch.players,
       };
       await scoreAPI.initializeScoreSheet(scoreSheetData);
-      toast.success('Scoring started!');
+      toastr.success('Scoring started!');
     } catch (error) {
-      toast.error('Error starting match scoring');
+      toastr.error('Error starting match scoring');
     }
   };
 
@@ -71,7 +80,7 @@ const LiveScoring = () => {
         totalScore: newScore,
       });
     } catch (error) {
-      toast.error('Error updating score');
+      toastr.error('Error updating score');
     }
   };
 
@@ -88,11 +97,11 @@ const LiveScoring = () => {
       await matchAPI.endMatch(selectedMatch._id, { winners });
       await scoreAPI.finalizeMatchScore(selectedMatch._id, { winners });
 
-      toast.success('Match completed!');
+      toastr.success('Match completed!');
       setSelectedMatch(null);
       setScores({});
     } catch (error) {
-      toast.error('Error ending match');
+      toastr.error('Error ending match');
     }
   };
 

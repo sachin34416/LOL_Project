@@ -4,7 +4,16 @@ import { useTournamentStore } from '../store/tournamentStore';
 import { usePlayerStore } from '../store/playerStore';
 import { matchAPI, tournamentAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiPlay } from 'react-icons/fi';
-import toast from 'react-hot-toast';
+import toastr from 'toastr';
+
+// Configure toastr
+toastr.options = {
+  closeButton: true,
+  progressBar: false,
+  timeOut: 4000,
+  positionClass: 'toast-top-right',
+  preventDuplicates: true,
+};
 
 const MatchScheduling = () => {
   const matches = useMatchStore((state) => state.matches);
@@ -68,7 +77,7 @@ const MatchScheduling = () => {
     try {
       const response = await matchAPI.createMatch(formData);
       addMatch(response.data.data);
-      toast.success('Match scheduled successfully!');
+      toastr.success('Match scheduled successfully!');
       setShowModal(false);
       setFormData({
         tournamentId: '',
@@ -79,7 +88,7 @@ const MatchScheduling = () => {
         court: '',
       });
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error scheduling match');
+      toastr.error(error.response?.data?.message || 'Error scheduling match');
     }
   };
 
@@ -87,9 +96,9 @@ const MatchScheduling = () => {
     try {
       const response = await matchAPI.startMatch(matchId);
       updateMatch(matchId, response.data.data);
-      toast.success('Match started!');
+      toastr.success('Match started!');
     } catch (error) {
-      toast.error('Error starting match');
+      toastr.error('Error starting match');
     }
   };
 

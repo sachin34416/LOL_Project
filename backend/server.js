@@ -16,6 +16,7 @@ app.use(express.json());
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  family: 4, // Use IPv4
 })
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.log('MongoDB connection error:', err));
@@ -26,8 +27,10 @@ const playerRoutes = require('./routes/playerRoutes');
 const tournamentRoutes = require('./routes/tournamentRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const scoreRoutes = require('./routes/scoreRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // API Routes
+app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/players', playerRoutes);
 app.use('/api/tournaments', tournamentRoutes);

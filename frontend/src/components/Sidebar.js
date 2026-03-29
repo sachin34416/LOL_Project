@@ -4,7 +4,7 @@ import {
   FiHome,
   FiUsers,
   FiAward,
-  FiGamepad2,
+  FiGrid,
   FiCalendar,
   FiBarChart2,
   FiLogOut,
@@ -15,7 +15,7 @@ const Sidebar = ({ isOpen }) => {
     { icon: FiHome, label: 'Dashboard', path: '/' },
     { icon: FiUsers, label: 'Players', path: '/players' },
     { icon: FiAward, label: 'Tournaments', path: '/tournaments' },
-    { icon: FiGamepad2, label: 'Games', path: '/games' },
+    { icon: FiGrid, label: 'Games', path: '/games' },
     { icon: FiCalendar, label: 'Matches', path: '/matches' },
     { icon: FiBarChart2, label: 'Live Scoring', path: '/live-scoring' },
   ];

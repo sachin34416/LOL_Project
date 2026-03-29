@@ -5,13 +5,13 @@ import { useMatchStore } from '../store/matchStore';
 import { FiUsers, FiAward, FiCalendar, FiBarChart2 } from 'react-icons/fi';
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white rounded-lg shadow p-6 flex items-center gap-4">
-    <div className={`p-3 rounded-lg ${color}`}>
-      <Icon className="text-2xl text-white" />
+  <div className={`bg-gradient-to-br ${color} rounded-lg shadow-lg p-6 flex items-center gap-4 text-white hover:shadow-xl transition-all hover:-translate-y-1`}>
+    <div className="p-3 rounded-lg bg-white bg-opacity-20 backdrop-blur-sm">
+      <Icon className="text-3xl" />
     </div>
     <div>
-      <p className="text-gray-600 text-sm">{label}</p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-white text-opacity-80 text-sm font-medium">{label}</p>
+      <p className="text-3xl font-bold">{value}</p>
     </div>
   </div>
 );
@@ -38,9 +38,11 @@ const Dashboard = () => {
   const completedMatches = matches.filter(m => m.status === 'completed').length;
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+    <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+      <div className="mb-8 bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+          Dashboard
+        </h1>
         <p className="text-gray-600">Welcome back! Here's your tournament overview.</p>
       </div>
 
@@ -49,36 +51,38 @@ const Dashboard = () => {
           icon={FiUsers}
           label="Registered Players"
           value={players.length}
-          color="bg-blue-500"
+          color="from-emerald-500 to-teal-500"
         />
         <StatCard
           icon={FiAward}
           label="Active Tournaments"
           value={activeTournaments}
-          color="bg-green-500"
+          color="from-blue-500 to-cyan-500"
         />
         <StatCard
           icon={FiCalendar}
           label="Scheduled Matches"
           value={matches.filter(m => m.status === 'scheduled').length}
-          color="bg-yellow-500"
+          color="from-purple-500 to-pink-500"
         />
         <StatCard
           icon={FiBarChart2}
           label="Completed Matches"
           value={completedMatches}
-          color="bg-purple-500"
+          color="from-orange-500 to-yellow-500"
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Today's Matches */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Today's Matches</h2>
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
+            Today's Matches
+          </h2>
           <div className="space-y-3">
             {todaysMatches.length > 0 ? (
               todaysMatches.slice(0, 5).map((match) => (
-                <div key={match._id} className="border border-gray-200 rounded p-3">
+                <div key={match._id} className="border border-emerald-200 rounded-lg p-4 hover:bg-emerald-50 transition-colors">
                   <div className="flex justify-between items-center">
                     <div>
                       <p className="font-semibold text-gray-900">{match.gameName}</p>
@@ -87,8 +91,8 @@ const Dashboard = () => {
                       </p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      match.status === 'ongoing' ? 'bg-green-100 text-green-800' :
-                      match.status === 'scheduled' ? 'bg-yellow-100 text-yellow-800' :
+                      match.status === 'ongoing' ? 'bg-emerald-100 text-emerald-800' :
+                      match.status === 'scheduled' ? 'bg-blue-100 text-blue-800' :
                       'bg-gray-100 text-gray-800'
                     }`}>
                       {match.status.charAt(0).toUpperCase() + match.status.slice(1)}
@@ -97,22 +101,28 @@ const Dashboard = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-600 text-center py-8">No matches scheduled for today</p>
+              <div className="text-gray-600 text-center py-8 bg-gray-50 rounded-lg">
+                <p>No matches scheduled for today</p>
+              </div>
             )}
           </div>
         </div>
 
         {/* Top Players */}
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Top Players</h2>
+        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-4">
+            Top Players
+          </h2>
           <div className="space-y-3">
             {players.slice(0, 5).map((player, index) => (
-              <div key={player._id} className="flex items-center gap-4">
-                <span className="text-lg font-bold text-gray-400">#{index + 1}</span>
+              <div key={player._id} className="flex items-center gap-4 p-3 hover:bg-emerald-50 rounded-lg transition-colors">
+                <span className="text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">
+                  #{index + 1}
+                </span>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900">{player.name}</p>
                   <p className="text-sm text-gray-600">
-                    {player.stats.wins} Wins • {player.stats.winPercentage}%
+                    {player.stats?.wins || 0} Wins • {player.stats?.winPercentage || 0}%
                   </p>
                 </div>
               </div>

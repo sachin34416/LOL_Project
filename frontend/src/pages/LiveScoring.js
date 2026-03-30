@@ -2,20 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useMatchStore } from '../store/matchStore';
 import { matchAPI, scoreAPI } from '../services/api';
 import { FiPlus, FiMinus } from 'react-icons/fi';
-import toastr from 'toastr';
-
-// Configure toastr
-toastr.options = {
-  closeButton: true,
-  progressBar: false,
-  timeOut: 4000,
-  positionClass: 'toast-top-right',
-  preventDuplicates: true,
-};
+import useToastStore from '../store/toastStore';
 
 const LiveScoring = () => {
   const upcomingMatches = useMatchStore((state) => state.upcomingMatches);
   const fetchUpcomingMatches = useMatchStore((state) => state.fetchUpcomingMatches);
+  const addToast = useToastStore((state) => state.addToast);
 
   const [selectedMatch, setSelectedMatch] = useState(null);
   const [scores, setScores] = useState({});
@@ -46,7 +38,7 @@ const LiveScoring = () => {
 
   const handleStartScoring = async () => {
     if (!selectedMatch) {
-      toastr.error('Please select a match');
+      addToast('Please select a match', 'error');
       return;
     }
 
@@ -58,9 +50,9 @@ const LiveScoring = () => {
         players: selectedMatch.players,
       };
       await scoreAPI.initializeScoreSheet(scoreSheetData);
-      toastr.success('Scoring started!');
+      addToast('Scoring started!', 'success');
     } catch (error) {
-      toastr.error('Error starting match scoring');
+      addToast('Error starting match scoring', 'error');
     }
   };
 
@@ -80,7 +72,7 @@ const LiveScoring = () => {
         totalScore: newScore,
       });
     } catch (error) {
-      toastr.error('Error updating score');
+      addToast('Error updating score', 'error');
     }
   };
 
@@ -97,48 +89,48 @@ const LiveScoring = () => {
       await matchAPI.endMatch(selectedMatch._id, { winners });
       await scoreAPI.finalizeMatchScore(selectedMatch._id, { winners });
 
-      toastr.success('Match completed!');
+      addToast('Match completed!', 'success');
       setSelectedMatch(null);
       setScores({});
     } catch (error) {
-      toastr.error('Error ending match');
+      addToast('Error ending match', 'error');
     }
   };
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Live Scoring</h1>
-      <p className="text-gray-600 mb-8">Update match scores in real-time</p>
+    <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">
+      <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">Live Scoring</h1>
+      <p className="text-purple-200 mb-8">Update match scores in real-time</p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-y-auto">
         {/* Match Selection */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Select Match</h2>
-            <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="lg:col-span-1 overflow-y-auto flex flex-col">
+          <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg border border-purple-700/50 p-6 flex-1 flex flex-col">
+            <h2 className="text-xl font-bold text-amber-300 mb-4">Select Match</h2>
+            <div className="space-y-2 overflow-y-auto flex-1">
               {upcomingMatches.length > 0 ? (
                 upcomingMatches.map((match) => (
                   <button
                     key={match._id}
                     onClick={() => handleSelectMatch(match)}
-                    className={`w-full text-left p-4 rounded-lg border-2 transition-colors ${
+                    className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
                       selectedMatch?._id === match._id
-                        ? 'border-indigo-600 bg-indigo-50'
-                        : 'border-gray-200 hover:border-gray-300 bg-gray-50'
+                        ? 'border-amber-500 bg-amber-500/20'
+                        : 'border-purple-700/50 hover:border-purple-600/70 bg-slate-700/20 hover:bg-slate-700/40'
                     }`}
                   >
-                    <p className="font-semibold text-gray-900">{match.gameName}</p>
-                    <p className="text-xs text-gray-600 mt-1">
+                    <p className="font-semibold text-amber-300">{match.gameName}</p>
+                    <p className="text-xs text-purple-300 mt-1">
                       {match.players.map((p) => p.playerName).join(' vs ')}
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-purple-400 mt-1">
                       {new Date(match.scheduledAt).toLocaleTimeString()}
                     </p>
                     <span
                       className={`inline-block mt-2 px-2 py-1 rounded text-xs font-semibold capitalize ${
                         match.status === 'ongoing'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                          ? 'bg-green-500/30 text-green-200 border border-green-500/50'
+                          : 'bg-amber-500/30 text-amber-200 border border-amber-500/50'
                       }`}
                     >
                       {match.status}
@@ -146,26 +138,26 @@ const LiveScoring = () => {
                   </button>
                 ))
               ) : (
-                <p className="text-gray-600 text-center py-8">No upcoming matches</p>
+                <p className="text-purple-300 text-center py-8">No upcoming matches</p>
               )}
             </div>
           </div>
         </div>
 
         {/* Score Entry */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 overflow-y-auto flex flex-col">
           {selectedMatch ? (
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg border border-purple-700/50 p-6 flex-1 flex flex-col overflow-y-auto">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{selectedMatch.gameName}</h2>
-                <p className="text-gray-600">
+                <h2 className="text-2xl font-bold text-amber-300 mb-2">{selectedMatch.gameName}</h2>
+                <p className="text-purple-300">
                   {new Date(selectedMatch.scheduledAt).toLocaleString()}
                 </p>
                 <span
                   className={`inline-block mt-2 px-3 py-1 rounded-full text-sm font-semibold capitalize ${
                     selectedMatch.status === 'ongoing'
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-yellow-100 text-yellow-800'
+                      ? 'bg-green-500/30 text-green-200 border border-green-500/50'
+                      : 'bg-amber-500/30 text-amber-200 border border-amber-500/50'
                   }`}
                 >
                   {selectedMatch.status}
@@ -173,17 +165,17 @@ const LiveScoring = () => {
               </div>
 
               {/* Score Board */}
-              <div className="border-t pt-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Score Board</h3>
+              <div className="border-t border-purple-700/30 pt-6 flex-1 overflow-y-auto">
+                <h3 className="text-lg font-semibold text-amber-300 mb-6">Score Board</h3>
                 <div className="space-y-6">
                   {selectedMatch.players.map((player, index) => (
-                    <div key={player.playerId} className="border border-gray-200 rounded-lg p-6">
+                    <div key={player.playerId} className="border border-purple-700/50 bg-slate-700/20 rounded-lg p-6">
                       <div className="flex justify-between items-start mb-4">
                         <div>
-                          <p className="text-lg font-bold text-gray-900">{player.playerName}</p>
-                          <p className="text-sm text-gray-600">Player {index + 1}</p>
+                          <p className="text-lg font-bold text-amber-300">{player.playerName}</p>
+                          <p className="text-sm text-purple-300">Player {index + 1}</p>
                         </div>
-                        <div className="text-4xl font-bold text-indigo-600">
+                        <div className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
                           {scores[player.playerId] || 0}
                         </div>
                       </div>
@@ -191,13 +183,13 @@ const LiveScoring = () => {
                       <div className="flex gap-4">
                         <button
                           onClick={() => handleUpdateScore(player.playerId, Math.max(0, (scores[player.playerId] || 0) - 1))}
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium"
+                          className="flex-1 bg-orange-600/80 hover:bg-orange-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium transition-all"
                         >
                           <FiMinus /> Decrease
                         </button>
                         <button
                           onClick={() => handleUpdateScore(player.playerId, (scores[player.playerId] || 0) + 1)}
-                          className="flex-1 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium"
+                          className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 rounded-lg flex items-center justify-center gap-2 font-medium transition-all"
                         >
                           <FiPlus /> Increase
                         </button>
@@ -207,11 +199,11 @@ const LiveScoring = () => {
                 </div>
 
                 {/* Match Controls */}
-                <div className="flex gap-4 mt-8 pt-6 border-t">
+                <div className="flex gap-4 mt-8 pt-6 border-t border-purple-700/30">
                   {selectedMatch.status === 'scheduled' && (
                     <button
                       onClick={handleStartScoring}
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+                      className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-3 rounded-lg font-semibold transition-all"
                     >
                       Start Match
                     </button>
@@ -219,7 +211,7 @@ const LiveScoring = () => {
                   {selectedMatch.status === 'ongoing' && (
                     <button
                       onClick={handleEndMatch}
-                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold"
+                      className="flex-1 bg-purple-600/80 hover:bg-purple-600 text-white py-3 rounded-lg font-semibold transition-all"
                     >
                       End Match
                     </button>
@@ -228,8 +220,8 @@ const LiveScoring = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-lg shadow p-12 text-center">
-              <p className="text-gray-600 text-lg">Select a match to start scoring</p>
+            <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg border border-purple-700/50 p-12 text-center flex items-center justify-center flex-1">
+              <p className="text-purple-300 text-lg">Select a match to start scoring</p>
             </div>
           )}
         </div>

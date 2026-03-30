@@ -1,13 +1,16 @@
 .App {
   display: flex;
   height: 100vh;
-  background: linear-gradient(to bottom, #f0fdf4, #e0f2fe);
+  background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+  overflow: hidden;
 }
 
 .App main {
   flex: 1;
-  overflow-y: auto;
-  background: linear-gradient(135deg, #f0fdf4 0%, #f5f3ff 100%);
+  overflow: hidden;
+  background: linear-gradient(180deg, #0f0f1a 0%, #16213e 50%, #0d1b2a 100%);
+  display: flex;
+  flex-direction: column;
 }
 
 /* ===== TOASTR - Simplified Custom Styling ===== */
@@ -22,10 +25,10 @@
 #toast-container > div.toast {
   position: relative !important;
   margin-bottom: 10px !important;
-  border-radius: 6px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3) !important;
   padding: 14px 40px 14px 16px !important;
-  background-color: #10b981 !important;
+  background-color: #7c3aed !important;
   color: white !important;
   min-height: auto !important;
   display: block !important;
@@ -35,19 +38,19 @@
 }
 
 #toast-container > div.toast.toast-error {
-  background-color: #ef4444 !important;
+  background-color: #dc2626 !important;
 }
 
 #toast-container > div.toast.toast-warning {
-  background-color: #f59e0b !important;
+  background-color: #f97316 !important;
 }
 
 #toast-container > div.toast.toast-info {
-  background-color: #3b82f6 !important;
+  background-color: #7c3aed !important;
 }
 
 #toast-container > div.toast.toast-success {
-  background-color: #10b981 !important;
+  background-color: #7c3aed !important;
 }
 
 /* Hide title completely */
@@ -166,7 +169,7 @@ button:active::before {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(135deg, #10b981 0%, #0ea5e9 100%);
+  background: linear-gradient(135deg, #fbbf24 0%, #f97316 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

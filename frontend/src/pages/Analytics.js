@@ -62,13 +62,13 @@ const Analytics = () => {
   };
 
   return (
-    <div className="p-8 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">
       {/* Header */}
-      <div className="mb-8 bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+      <div className="mb-8 bg-slate-800/40 backdrop-blur-xl rounded-lg p-6 shadow-lg border border-purple-700/50">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
           📊 Analytics & Statistics
         </h1>
-        <p className="text-gray-600">Tournament-wide performance metrics and insights</p>
+        <p className="text-purple-200">Tournament-wide performance metrics and insights</p>
       </div>
 
       {/* Key Metrics */}
@@ -78,39 +78,39 @@ const Analytics = () => {
           label="Total Players"
           value={players.length}
           unit="players"
-          color="from-emerald-500 to-teal-500"
+          color="from-amber-600 to-amber-400"
         />
         <StatCard
           icon={FiTarget}
           label="Total Matches"
           value={totalMatches}
           unit="matches"
-          color="from-blue-500 to-cyan-500"
+          color="from-purple-600 to-purple-400"
         />
         <StatCard
           icon={FiBarChart2}
           label="Overall Win Rate"
           value={overallWinRate}
           unit="%"
-          color="from-purple-500 to-pink-500"
+          color="from-orange-600 to-orange-400"
         />
         <StatCard
           icon={FiTrendingUp}
           label="Completed Matches"
           value={completedMatches}
           unit="matches"
-          color="from-orange-500 to-yellow-500"
+          color="from-purple-600 to-pink-500"
         />
       </div>
 
       {/* Match Status Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {[
-          { label: 'Scheduled', value: matchesByStatus.scheduled, color: 'from-blue-500 to-cyan-500' },
-          { label: 'Ongoing', value: matchesByStatus.ongoing, color: 'from-yellow-500 to-orange-500' },
-          { label: 'Completed', value: matchesByStatus.completed, color: 'from-emerald-500 to-teal-500' },
+          { label: 'Scheduled', value: matchesByStatus.scheduled, color: 'from-purple-600 to-purple-400' },
+          { label: 'Ongoing', value: matchesByStatus.ongoing, color: 'from-orange-600 to-orange-400' },
+          { label: 'Completed', value: matchesByStatus.completed, color: 'from-amber-600 to-amber-400' },
         ].map((status) => (
-          <div key={status.label} className={`bg-gradient-to-br ${status.color} rounded-lg shadow-md p-6 text-white`}>
+          <div key={status.label} className={`bg-gradient-to-br ${status.color} rounded-lg shadow-lg p-6 text-white`}>
             <p className="text-white text-opacity-80 text-sm font-medium mb-2">{status.label}</p>
             <p className="text-4xl font-bold">{status.value}</p>
             <p className="text-sm text-white text-opacity-70 mt-2">
@@ -121,27 +121,27 @@ const Analytics = () => {
       </div>
 
       {/* Performance Rankings */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-1 overflow-y-auto pr-2">
         {/* Most Wins */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg p-6 border border-purple-700/50">
+          <h3 className="text-2xl font-bold text-amber-400 mb-4 flex items-center gap-2">
             <span className="text-3xl">🏆</span> Top Winners
           </h3>
           <div className="space-y-3">
             {topWinners.map((player, idx) => {
               const stats = player.stats || { wins: 0 };
               return (
-                <div key={player._id} className="flex items-center justify-between p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors">
+                <div key={player._id} className="flex items-center justify-between p-4 bg-amber-900/30 rounded-lg hover:bg-amber-800/30 transition-colors border border-amber-700/30">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-400 flex items-center justify-center text-white font-bold text-sm">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center text-white font-bold text-sm">
                       {idx + 1}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{player.name}</p>
-                      <p className="text-xs text-gray-600">{player.email}</p>
+                      <p className="font-semibold text-amber-300">{player.name}</p>
+                      <p className="text-xs text-purple-300">{player.email}</p>
                     </div>
                   </div>
-                  <span className="px-4 py-2 bg-emerald-200 text-emerald-800 rounded-full font-bold text-lg">
+                  <span className="px-4 py-2 bg-amber-500/30 text-amber-200 rounded-full font-bold text-lg border border-amber-500/50">
                     {stats.wins || 0}
                   </span>
                 </div>
@@ -151,25 +151,25 @@ const Analytics = () => {
         </div>
 
         {/* Most Consistent */}
-        <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
-          <h3 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+        <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg p-6 border border-purple-700/50">
+          <h3 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
             <span className="text-3xl">⭐</span> Most Consistent
           </h3>
           <div className="space-y-3">
             {mostConsistent.map((player, idx) => {
               const stats = player.stats || { winPercentage: 0 };
               return (
-                <div key={player._id} className="flex items-center justify-between p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                <div key={player._id} className="flex items-center justify-between p-4 bg-purple-900/30 rounded-lg hover:bg-purple-800/30 transition-colors border border-purple-700/30">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
                       {idx + 1}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{player.name}</p>
-                      <p className="text-xs text-gray-600">{player.email}</p>
+                      <p className="font-semibold text-purple-300">{player.name}</p>
+                      <p className="text-xs text-purple-400">{player.email}</p>
                     </div>
                   </div>
-                  <span className="px-4 py-2 bg-purple-200 text-purple-800 rounded-full font-bold text-lg">
+                  <span className="px-4 py-2 bg-purple-500/30 text-purple-200 rounded-full font-bold text-lg border border-purple-500/50">
                     {stats.winPercentage || 0}%
                   </span>
                 </div>
@@ -180,8 +180,8 @@ const Analytics = () => {
       </div>
 
       {/* Win Distribution Chart */}
-      <div className="mt-8 bg-white rounded-lg shadow-md p-6 border border-gray-200">
-        <h3 className="text-2xl font-bold text-gray-900 mb-6">📈 Win Distribution</h3>
+      <div className="mt-8 bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg p-6 border border-purple-700/50 max-h-64 overflow-y-auto">
+        <h3 className="text-2xl font-bold text-amber-400 mb-6">📈 Win Distribution</h3>
         <div className="space-y-4">
           {[...players]
             .sort((a, b) => (b.stats?.wins || 0) - (a.stats?.wins || 0))
@@ -194,12 +194,12 @@ const Analytics = () => {
               return (
                 <div key={player._id} className="flex items-center gap-4">
                   <div className="w-32">
-                    <p className="font-semibold text-gray-900 truncate">{player.name}</p>
+                    <p className="font-semibold text-purple-200 truncate">{player.name}</p>
                   </div>
                   <div className="flex-1">
-                    <div className="w-full h-8 bg-gray-200 rounded-lg overflow-hidden">
+                    <div className="w-full h-8 bg-slate-700/50 rounded-lg overflow-hidden border border-purple-700/20">
                       <div
-                        className="h-full bg-gradient-to-r from-emerald-400 to-teal-400 flex items-center justify-end pr-3 transition-all duration-300"
+                        className="h-full bg-gradient-to-r from-amber-500 to-orange-500 flex items-center justify-end pr-3 transition-all duration-300"
                         style={{ width: `${percentage}%` }}
                       >
                         {percentage > 15 && <span className="text-white font-bold text-sm">{stats.wins}</span>}
@@ -207,7 +207,7 @@ const Analytics = () => {
                     </div>
                   </div>
                   <div className="w-12 text-right">
-                    <p className="font-bold text-emerald-600">{stats.wins}</p>
+                    <p className="font-bold text-amber-400">{stats.wins}</p>
                   </div>
                 </div>
               );

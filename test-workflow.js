@@ -10,7 +10,7 @@ const API_BASE = 'http://localhost:5000/api';
 let authToken = '';
 let userId = '';
 
-// Colored console output
+// Console output
 const colors = {
   reset: '\x1b[0m',
   green: '\x1b[32m',
@@ -21,11 +21,11 @@ const colors = {
 };
 
 const log = {
-  success: (msg) => console.log(`${colors.green}✅ ${msg}${colors.reset}`),
-  error: (msg) => console.log(`${colors.red}❌ ${msg}${colors.reset}`),
-  info: (msg) => console.log(`${colors.blue}ℹ️  ${msg}${colors.reset}`),
-  warn: (msg) => console.log(`${colors.yellow}⚠️  ${msg}${colors.reset}`),
-  section: (msg) => console.log(`\n${colors.cyan}━━━ ${msg} ━━━${colors.reset}`),
+  success: (msg) => console.log(`${colors.green}[SUCCESS] ${msg}${colors.reset}`),
+  error: (msg) => console.log(`${colors.red}[ERROR] ${msg}${colors.reset}`),
+  info: (msg) => console.log(`${colors.blue}[INFO] ${msg}${colors.reset}`),
+  warn: (msg) => console.log(`${colors.yellow}[WARNING] ${msg}${colors.reset}`),
+  section: (msg) => console.log(`\n${colors.cyan}--- ${msg} ---${colors.reset}`),
 };
 
 // API client with token
@@ -308,26 +308,26 @@ async function testWorkflow() {
           }
 
           // ============ FINAL SUMMARY ============
-          log.section('WORKFLOW TEST COMPLETED SUCCESSFULLY ✅');
+          log.section('WORKFLOW TEST COMPLETED SUCCESSFULLY');
           console.log(`
-${colors.green}╔════════════════════════════════════════════╗${colors.reset}
-${colors.green}║   ALL WORKFLOW TESTS PASSED ✓              ║${colors.reset}
-${colors.green}╠════════════════════════════════════════════╣${colors.reset}
-${colors.green}║ ✓ Authentication (Login/Register)         ║${colors.reset}
-${colors.green}║ ✓ Player Registration (3 players)         ║${colors.reset}
-${colors.green}║ ✓ Game Templates Retrieved                ║${colors.reset}
-${colors.green}║ ✓ Tournament Created                      ║${colors.reset}
-${colors.green}║ ✓ Players Registered to Tournament        ║${colors.reset}
-${colors.green}║ ✓ Match Scheduled                         ║${colors.reset}
-${colors.green}║ ✓ Match Started                           ║${colors.reset}
-${colors.green}║ ✓ Score Sheet Initialized                 ║${colors.reset}
-${colors.green}║ ✓ Scores Updated During Match            ║${colors.reset}
-${colors.green}║ ✓ Match Ended with Winner Determined     ║${colors.reset}
-${colors.green}║ ✓ Scores Finalized                        ║${colors.reset}
-${colors.green}║ ✓ Tournament Standings Retrieved          ║${colors.reset}
-${colors.green}║ ✓ Player Statistics Updated               ║${colors.reset}
-${colors.green}║ ✓ Leaderboard Generated                   ║${colors.reset}
-${colors.green}╚════════════════════════════════════════════╝${colors.reset}
+${colors.green}=============================================${colors.reset}
+${colors.green}   ALL WORKFLOW TESTS PASSED              ${colors.reset}
+${colors.green}=============================================${colors.reset}
+${colors.green}[OK] Authentication (Login/Register)         ${colors.reset}
+${colors.green}[OK] Player Registration (3 players)         ${colors.reset}
+${colors.green}[OK] Game Templates Retrieved                ${colors.reset}
+${colors.green}[OK] Tournament Created                      ${colors.reset}
+${colors.green}[OK] Players Registered to Tournament        ${colors.reset}
+${colors.green}[OK] Match Scheduled                         ${colors.reset}
+${colors.green}[OK] Match Started                           ${colors.reset}
+${colors.green}[OK] Score Sheet Initialized                 ${colors.reset}
+${colors.green}[OK] Scores Updated During Match            ${colors.reset}
+${colors.green}[OK] Match Ended with Winner Determined     ${colors.reset}
+${colors.green}[OK] Scores Finalized                        ${colors.reset}
+${colors.green}[OK] Tournament Standings Retrieved          ${colors.reset}
+${colors.green}[OK] Player Statistics Updated               ${colors.reset}
+${colors.green}[OK] Leaderboard Generated                   ${colors.reset}
+${colors.green}=============================================${colors.reset}
 
 ${colors.cyan}System is ready for production use!${colors.reset}
           `);
@@ -350,7 +350,7 @@ ${colors.cyan}System is ready for production use!${colors.reset}
 }
 
 // Run the test
-console.log(`${colors.cyan}🎮 Starting Complete Workflow Test...${colors.reset}`);
+console.log(`${colors.cyan}Starting Complete Workflow Test...${colors.reset}`);
 testWorkflow().catch(err => {
   log.error(`Unexpected error: ${err.message}`);
   process.exit(1);

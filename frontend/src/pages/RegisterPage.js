@@ -1,173 +1,158 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { FiUser, FiLock, FiMail } from 'react-icons/fi';
 import useToastStore from '../store/toastStore';
-import { FiUser, FiMail, FiLock, FiLoader } from 'react-icons/fi';
 
 const RegisterPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
-  const { register, loading, error, clearError } = useAuthStore();
-  const { success, error: showError } = useToastStore();
+  const addToast = useToastStore((state) => state.addToast);
+
+  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    clearError();
+    setLoading(true);
 
-    // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      showError('Please fill in all fields');
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      addToast('Passwords do not match', 'error');
+      setLoading(false);
       return;
     }
 
-    if (password.length < 6) {
-      showError('Password must be at least 6 characters');
-      return;
-    }
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/register`, formData);
 
-    if (password !== confirmPassword) {
-      showError('Passwords do not match');
-      return;
-    }
-
-    const result = await register(name, email, password, confirmPassword);
-
-    if (result.success) {
-      success('Account registered successfully!');
-      setTimeout(() => navigate('/login'), 1500);
-    } else {
-      showError(result.message);
+      if (response.data.success) {
+        addToast('Registration successful! Please login.', 'success');
+        navigate('/login');
+      }
+    } catch (error) {
+      const message = error.response?.data?.message || 'Registration failed';
+      addToast(message, 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-900 to-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Decorative elements */}
-        <div className="absolute top-10 right-10 w-40 h-40 bg-purple-500/10 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 left-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl"></div>
-        
-        <div className="relative bg-slate-900/80 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-purple-700/30">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-4xl font-black bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2 tracking-tight">
-              Tournament Manager
-            </h1>
-            <p className="text-purple-300 text-sm font-medium">Join the competition</p>
-          </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+      <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-2xl p-8 w-full max-w-md border border-purple-700/50">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
+            League of Legends
+          </h1>
+          <p className="text-purple-200">Create your account</p>
+        </div>
 
-          {/* Registration Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name Input */}
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-amber-400 mb-3">
-              Full Name
+            <label className="block text-sm font-medium text-purple-200 mb-2">
+              Name
             </label>
             <div className="relative">
-              <FiUser className="absolute left-4 top-3.5 text-purple-400/60" />
+              <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
               <input
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="John Doe"
-                className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-purple-600/30 rounded-lg text-purple-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 backdrop-blur-sm"
-                disabled={loading}
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                placeholder="Enter your name"
               />
             </div>
           </div>
 
-          {/* Email Input */}
           <div>
-            <label className="block text-sm font-semibold text-amber-400 mb-3">
-              Email Address
+            <label className="block text-sm font-medium text-purple-200 mb-2">
+              Email
             </label>
             <div className="relative">
-              <FiMail className="absolute left-4 top-3.5 text-purple-400/60" />
+              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-purple-600/30 rounded-lg text-purple-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 backdrop-blur-sm"
-                disabled={loading}
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                placeholder="Enter your email"
               />
             </div>
           </div>
 
-          {/* Password Input */}
           <div>
-            <label className="block text-sm font-semibold text-amber-400 mb-3">
+            <label className="block text-sm font-medium text-purple-200 mb-2">
               Password
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-3.5 text-purple-400/60" />
+              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-purple-600/30 rounded-lg text-purple-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 backdrop-blur-sm"
-                disabled={loading}
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                required
+                minLength="6"
+                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                placeholder="Enter your password (min 6 characters)"
               />
             </div>
-            <p className="text-purple-400/60 text-xs mt-2">Minimum 6 characters</p>
           </div>
 
-          {/* Confirm Password Input */}
           <div>
-            <label className="block text-sm font-semibold text-amber-400 mb-3">
+            <label className="block text-sm font-medium text-purple-200 mb-2">
               Confirm Password
             </label>
             <div className="relative">
-              <FiLock className="absolute left-4 top-3.5 text-purple-400/60" />
+              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
               <input
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-12 pr-4 py-3 bg-slate-800/50 border border-purple-600/30 rounded-lg text-purple-100 placeholder-purple-400/40 focus:outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20 transition-all duration-300 backdrop-blur-sm"
-                disabled={loading}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                required
+                minLength="6"
+                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                placeholder="Confirm your password"
               />
             </div>
           </div>
 
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold rounded-lg transition duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl mt-6"
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
           >
-            {loading && <FiLoader className="animate-spin" />}
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? 'Creating Account...' : 'Register'}
           </button>
         </form>
 
-        {/* Divider */}
-        <div className="my-8 flex items-center gap-4">
-          <div className="flex-1 h-px bg-purple-700/30"></div>
-          <span className="text-purple-400/60 text-sm font-medium">Already registered?</span>
-          <div className="flex-1 h-px bg-purple-700/30"></div>
-        </div>
-
-        {/* Login Link */}
-        <div className="text-center">
-          <Link
-            to="/login"
-            className="text-amber-400 hover:text-amber-300 font-semibold transition duration-200 text-sm"
-          >
-            Sign in instead →
-          </Link>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 pt-6 border-t border-gray-200">
-          <p className="text-center text-gray-500 text-xs">
-            © 2026 Tournament Manager. All rights reserved.
+        <div className="mt-6 text-center">
+          <p className="text-purple-200">
+            Already have an account?{' '}
+            <button
+              onClick={() => navigate('/login')}
+              className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
+            >
+              Login
+            </button>
           </p>
-        </div>
         </div>
       </div>
     </div>

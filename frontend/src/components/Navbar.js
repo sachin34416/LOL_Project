@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiMenu, FiBell, FiUser, FiLogOut, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiBell, FiUser, FiLogOut } from 'react-icons/fi';
 import { useAuthStore } from '../store/authStore';
 
 const Navbar = ({ onToggleSidebar }) => {

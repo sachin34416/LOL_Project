@@ -24,7 +24,7 @@ import './styles/App.css';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { isAuthenticated, initializeAuth } = useAuthStore();
+  const { initializeAuth } = useAuthStore();
 
   // Initialize auth from localStorage on app load
   useEffect(() => {

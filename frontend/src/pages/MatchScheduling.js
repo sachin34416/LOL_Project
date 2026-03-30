@@ -68,6 +68,8 @@ const MatchScheduling = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const response = await matchAPI.createMatch(formData);
+      addMatch(response.data.data);
       addToast('Match scheduled successfully!', 'success');
       setShowModal(false);
       setFormData({

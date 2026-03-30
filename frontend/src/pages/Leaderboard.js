@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { usePlayerStore } from '../store/playerStore';
 import { useTournamentStore } from '../store/tournamentStore';
+import { useMatchStore } from '../store/matchStore';
 import { playerAPI } from '../services/api';
 import { FiTrendingUp, FiAward, FiTarget, FiFilter } from 'react-icons/fi';
 
@@ -11,6 +12,9 @@ const Leaderboard = () => {
   const tournaments = useTournamentStore((state) => state.tournaments);
   const fetchAllTournaments = useTournamentStore((state) => state.fetchAllTournaments);
 
+  const matches = useMatchStore((state) => state.matches);
+  const fetchAllMatches = useMatchStore((state) => state.fetchAllMatches);
+
   const [sortBy, setSortBy] = useState('wins');
   const [selectedTournament, setSelectedTournament] = useState('all');
   const [filteredPlayers, setFilteredPlayers] = useState([]);
@@ -18,7 +22,8 @@ const Leaderboard = () => {
   useEffect(() => {
     fetchAllPlayers();
     fetchAllTournaments();
-  }, [fetchAllPlayers, fetchAllTournaments]);
+    fetchAllMatches();
+  }, [fetchAllPlayers, fetchAllTournaments, fetchAllMatches]);
 
   useEffect(() => {
     // Filter and sort players
@@ -92,10 +97,9 @@ const Leaderboard = () => {
   );
 
   const topPlayer = filteredPlayers[0];
-  const totalMatches = filteredPlayers.reduce(
-    (sum, p) => sum + ((p.stats?.wins || 0) + (p.stats?.losses || 0)),
-    0
-  );
+  const totalMatches = selectedTournament === 'all' 
+    ? matches.length 
+    : matches.filter(m => m.tournamentId === selectedTournament).length;
 
   return (
     <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">

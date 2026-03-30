@@ -4,7 +4,6 @@ import { FiMenu, FiBell, FiUser, FiLogOut, FiChevronDown } from 'react-icons/fi'
 import { useAuthStore } from '../store/authStore';
 
 const Navbar = ({ onToggleSidebar }) => {
-  const [showDropdown, setShowDropdown] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
 
@@ -14,62 +13,38 @@ const Navbar = ({ onToggleSidebar }) => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-white via-emerald-50 to-teal-50 shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-50 border-b border-emerald-200">
+    <nav className="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 shadow-2xl px-6 py-4 flex justify-between items-center sticky top-0 z-50 border-b border-purple-800/30">
       <div className="flex items-center gap-4">
         <button
           onClick={onToggleSidebar}
-          className="text-gray-600 hover:text-emerald-600 text-xl transition-colors"
+          className="text-purple-300 hover:text-amber-400 text-xl transition-colors duration-300"
         >
           <FiMenu />
         </button>
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-          Tournament Manager
+        <h1 className="text-2xl font-black bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent tracking-tight">
+          League of Legends
         </h1>
       </div>
 
-      <div className="flex items-center gap-6">
-        <button className="relative text-gray-600 hover:text-emerald-600 transition-colors">
+      <div className="flex items-center gap-4">
+        <button className="relative text-purple-300 hover:text-amber-400 transition-colors">
           <FiBell className="text-xl" />
           <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
         </button>
 
-        {/* User Dropdown */}
-        <div className="relative">
+        {/* User Name and Logout Button */}
+        <div className="flex items-center gap-3 pl-4 border-l border-purple-700/50">
+          <div className="flex items-center gap-2">
+            <FiUser className="text-xl text-purple-300" />
+            <span className="text-sm font-semibold text-purple-200">{user?.name || 'User'}</span>
+          </div>
           <button
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center gap-2 text-gray-700 hover:text-emerald-600 px-3 py-2 rounded-lg hover:bg-emerald-100 transition-all"
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-3 py-2 text-red-400 hover:bg-red-900/30 hover:text-red-300 rounded-lg transition-colors duration-300 border border-red-700/30 hover:border-red-500/50"
           >
-            <FiUser className="text-xl" />
-            <span className="text-sm font-medium">{user?.name || 'User'}</span>
-            <FiChevronDown className={`text-sm transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+            <FiLogOut className="text-lg" />
+            <span className="text-sm font-semibold">Logout</span>
           </button>
-
-          {/* Dropdown Menu */}
-          {showDropdown && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-emerald-200 py-2 z-10">
-              <div className="px-4 py-2 border-b border-emerald-100 bg-gradient-to-r from-emerald-50 to-teal-50">
-                <p className="font-semibold text-gray-800">{user?.name}</p>
-                <p className="text-xs text-gray-600">{user?.email}</p>
-              </div>
-              <button
-                onClick={() => {
-                  navigate('/profile');
-                  setShowDropdown(false);
-                }}
-                className="w-full text-left px-4 py-2 text-gray-700 hover:bg-emerald-50 transition-colors flex items-center gap-2 hover:text-emerald-700"
-              >
-                <FiUser className="text-sm" />
-                Profile
-              </button>
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2 hover:text-red-700"
-              >
-                <FiLogOut className="text-sm" />
-                Logout
-              </button>
-            </div>
-          )}
         </div>
       </div>
     </nav>

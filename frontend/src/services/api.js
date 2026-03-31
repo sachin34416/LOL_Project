@@ -44,6 +44,19 @@ export const playerAPI = {
   updatePlayerStats: (id, statsData) => api.put(`/players/${id}/stats`, statsData),
 };
 
+// Team API
+export const teamAPI = {
+  getAllTeams: () => api.get('/teams'),
+  getTeamById: (id) => api.get(`/teams/${id}`),
+  getTeamLeaderboard: (limit = 10) => api.get(`/teams/leaderboard?limit=${limit}`),
+  createTeam: (teamData) => api.post('/teams', teamData),
+  updateTeam: (id, teamData) => api.put(`/teams/${id}`, teamData),
+  deleteTeam: (id) => api.delete(`/teams/${id}`),
+  addPlayerToTeam: (teamId, playerId) => api.post(`/teams/${teamId}/add-player`, { playerId }),
+  removePlayerFromTeam: (teamId, playerId) => api.delete(`/teams/${teamId}/remove-player`, { data: { playerId } }),
+  updateTeamStats: (id, statsData) => api.put(`/teams/${id}/stats`, statsData),
+};
+
 // Tournament API
 export const tournamentAPI = {
   getAllTournaments: () => api.get('/tournaments'),
@@ -52,6 +65,10 @@ export const tournamentAPI = {
   createTournament: (tournamentData) => api.post('/tournaments', tournamentData),
   updateTournament: (id, tournamentData) => api.put(`/tournaments/${id}`, tournamentData),
   deleteTournament: (id) => api.delete(`/tournaments/${id}`),
+  registerTeamToTournament: (id, teamData) => 
+    api.post(`/tournaments/${id}/register-team`, teamData),
+  removeTeamFromTournament: (id, teamId) => 
+    api.delete(`/tournaments/${id}/remove-team`, { data: { teamId } }),
   registerPlayerToTournament: (id, playerData) => 
     api.post(`/tournaments/${id}/register-player`, playerData),
   removePlayerFromTournament: (id, playerData) => 

@@ -1,4 +1,5 @@
 const Tournament = require('../models/Tournament');
+const Team = require('../models/Team');
 const Player = require('../models/Player');
 
 // Get all tournaments
@@ -43,7 +44,7 @@ exports.createTournament = async (req, res) => {
       format,
       description,
       status: 'upcoming',
-      registeredPlayers: [],
+      registeredTeams: [],
       standings: [],
     });
 
@@ -88,10 +89,10 @@ exports.deleteTournament = async (req, res) => {
   }
 };
 
-// Register player to tournament
-exports.registerPlayerToTournament = async (req, res) => {
+// Register team to tournament
+exports.registerTeamToTournament = async (req, res) => {
   try {
-    const { playerId, playerName } = req.body;
+    const { teamId, teamName, captainId, captainName, memberCount } = req.body;
     const { id: tournamentId } = req.params;
 
     const tournament = await Tournament.findById(tournamentId);
@@ -99,23 +100,26 @@ exports.registerPlayerToTournament = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Tournament not found' });
     }
 
-    // Check if player already registered
-    const isRegistered = tournament.registeredPlayers.some(
-      p => p.playerId?.toString() === playerId
+    // Check if team already registered
+    const isRegistered = tournament.registeredTeams.some(
+      t => t.teamId?.toString() === teamId
     );
 
     if (isRegistered) {
-      return res.status(400).json({ success: false, message: 'Player already registered for this tournament' });
+      return res.status(400).json({ success: false, message: 'Team already registered for this tournament' });
     }
 
-    // Check max players limit
-    if (tournament.maxPlayers && tournament.registeredPlayers.length >= tournament.maxPlayers) {
+    // Check max teams limit
+    if (tournament.maxPlayers && tournament.registeredTeams.length >= tournament.maxPlayers) {
       return res.status(400).json({ success: false, message: 'Tournament is full' });
     }
 
-    tournament.registeredPlayers.push({
-      playerId,
-      playerName,
+    tournament.registeredTeams.push({
+      teamId,
+      teamName,
+      captainId,
+      captainName,
+      memberCount,
       joinedAt: new Date(),
     });
 
@@ -126,7 +130,29 @@ exports.registerPlayerToTournament = async (req, res) => {
   }
 };
 
-// Remove player from tournament
+// Remove team from tournament
+exports.removeTeamFromTournament = async (req, res) => {
+  try {
+    const { teamId } = req.body;
+    const { id: tournamentId } = req.params;
+
+    const tournament = await Tournament.findById(tournamentId);
+    if (!tournament) {
+      return res.status(404).json({ success: false, message: 'Tournament not found' });
+    }
+
+    tournament.registeredTeams = tournament.registeredTeams.filter(
+      t => t.teamId?.toString() !== teamId
+    );
+
+    const updatedTournament = await tournament.save();
+    res.status(200).json({ success: true, data: updatedTournament });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Remove player from tournament (deprecated - kept for backward compatibility)
 exports.removePlayerFromTournament = async (req, res) => {
   try {
     const { playerId } = req.body;

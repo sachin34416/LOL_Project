@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTournamentStore } from '../store/tournamentStore';
 import { useGameStore } from '../store/gameStore';
-import { usePlayerStore } from '../store/playerStore';
-import { tournamentAPI, gameAPI, playerAPI } from '../services/api';
+import { useTeamStore } from '../store/teamStore';
+import { tournamentAPI, gameAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiUsers } from 'react-icons/fi';
 import useToastStore from '../store/toastStore';
 
@@ -15,8 +15,8 @@ const TournamentManagement = () => {
   const games = useGameStore((state) => state.games);
   const fetchAllGames = useGameStore((state) => state.fetchAllGames);
 
-  const players = usePlayerStore((state) => state.players);
-  const fetchAllPlayers = usePlayerStore((state) => state.fetchAllPlayers);
+  const teams = useTeamStore((state) => state.teams);
+  const fetchAllTeams = useTeamStore((state) => state.fetchAllTeams);
 
   const addToast = useToastStore((state) => state.addToast);
 
@@ -37,7 +37,7 @@ const TournamentManagement = () => {
   useEffect(() => {
     fetchAllTournaments();
     fetchAllGames();
-    fetchAllPlayers();
+    fetchAllTeams();
   }, []);
 
   const handleInputChange = (e) => {
@@ -89,18 +89,19 @@ const TournamentManagement = () => {
     }
   };
 
-  const handleRegisterPlayer = async (playerId) => {
+  const handleRegisterTeam = async (teamId) => {
     try {
-      const player = players.find((p) => p._id === playerId);
-      await tournamentAPI.registerPlayerToTournament(selectedTournament._id, {
-        playerId,
-        playerName: player.name,
+      const team = teams.find((t) => t._id === teamId);
+      await tournamentAPI.registerTeamToTournament(selectedTournament._id, {
+        teamId,
+        teamName: team.name,
+        captain: team.captain,
       });
-      addToast(`${player.name} registered!`, 'success');
+      addToast(`${team.name} registered!`, 'success');
       setShowRegistrationModal(false);
       fetchAllTournaments();
     } catch (error) {
-      addToast(error.response?.data?.message || 'Error registering player', 'error');
+      addToast(error.response?.data?.message || 'Error registering team', 'error');
     }
   };
 
@@ -163,7 +164,7 @@ const TournamentManagement = () => {
               </p>
               <p className="text-purple-300 flex items-center gap-2">
                 <FiUsers className="text-lg text-orange-400" />
-                <span>{tournament.registeredPlayers.length}/{tournament.maxPlayers} Players</span>
+                <span>{(tournament.registeredTeams || []).length}/{tournament.maxPlayers} Teams</span>
               </p>
             </div>
 
@@ -175,7 +176,7 @@ const TournamentManagement = () => {
                 }}
                 className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-2 rounded-lg hover:from-amber-600 hover:to-orange-600 text-sm font-medium transition-all"
               >
-                Register Players
+                Register Teams
               </button>
               <button
                 onClick={() => handleDeleteTournament(tournament._id)}
@@ -313,25 +314,25 @@ const TournamentManagement = () => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
           <div className="bg-slate-800/90 backdrop-blur-xl rounded-lg shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-700/50">
             <h2 className="text-2xl font-bold text-amber-300 mb-4">
-              Register Players - {selectedTournament.name}
+              Register Teams - {selectedTournament.name}
             </h2>
             <p className="text-purple-300 mb-6">
-              {selectedTournament.registeredPlayers.length} / {selectedTournament.maxPlayers} players registered
+              {(selectedTournament.registeredTeams || []).length} / {selectedTournament.maxPlayers} teams registered
             </p>
 
             <div className="space-y-2">
-              {players.map((player) => {
-                const isRegistered = selectedTournament.registeredPlayers.some(
-                  (p) => p.playerId?.toString() === player._id.toString()
+              {teams.map((team) => {
+                const isRegistered = (selectedTournament.registeredTeams || []).some(
+                  (t) => t.teamId?.toString() === team._id.toString()
                 );
                 return (
-                  <div key={player._id} className="flex items-center justify-between border border-purple-700/50 bg-slate-700/20 p-4 rounded">
+                  <div key={team._id} className="flex items-center justify-between border border-purple-700/50 bg-slate-700/20 p-4 rounded">
                     <div>
-                      <p className="font-semibold text-amber-300">{player.name}</p>
-                      <p className="text-sm text-purple-300">{player.email}</p>
+                      <p className="font-semibold text-amber-300">{team.name}</p>
+                      <p className="text-sm text-purple-300">Captain: {team.captain?.name || 'N/A'} • Members: {(team.members || []).length}</p>
                     </div>
                     <button
-                      onClick={() => handleRegisterPlayer(player._id)}
+                      onClick={() => handleRegisterTeam(team._id)}
                       disabled={isRegistered}
                       className={`px-4 py-2 rounded font-medium transition-all ${
                         isRegistered

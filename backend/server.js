@@ -28,11 +28,13 @@ const tournamentRoutes = require('./routes/tournamentRoutes');
 const matchRoutes = require('./routes/matchRoutes');
 const scoreRoutes = require('./routes/scoreRoutes');
 const authRoutes = require('./routes/authRoutes');
+const teamRoutes = require('./routes/teamRoutes');
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/games', gameRoutes);
 app.use('/api/players', playerRoutes);
+app.use('/api/teams', teamRoutes);
 app.use('/api/tournaments', tournamentRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/scores', scoreRoutes);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { FiUser, FiLock, FiMail } from 'react-icons/fi';
+import { useAuthStore } from '../store/authStore';
 import useToastStore from '../store/toastStore';
 
 const LoginPage = () => {
@@ -11,13 +11,12 @@ const LoginPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'player',
   });
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { login, register, loading } = useAuthStore();
   const addToast = useToastStore((state) => state.addToast);
-
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,34 +25,51 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     try {
-      const endpoint = isLogin ? '/auth/login' : '/auth/register';
-      const payload = isLogin 
-        ? { email: formData.email, password: formData.password }
-        : formData;
-
-      const response = await axios.post(`${API_BASE_URL}${endpoint}`, payload);
-
-      if (response.data.success) {
-        if (isLogin) {
-          // Store token and user data
-          localStorage.setItem('authToken', response.data.data.token);
-          localStorage.setItem('user', JSON.stringify(response.data.data.user));
+      if (isLogin) {
+        const result = await login(formData.email, formData.password);
+        if (result.success) {
           addToast('Login successful!', 'success');
-          navigate('/dashboard');
+          
+          // Check if player needs to register
+          const { user, needsPlayerRegistration } = useAuthStore.getState();
+          if (needsPlayerRegistration(user)) {
+            navigate('/player-registration');
+          } else {
+            navigate('/');
+          }
         } else {
-          addToast('Registration successful! Please login.', 'success');
-          setIsLogin(true);
-          setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+          addToast(result.message, 'error');
+        }
+      } else {
+        // Validate passwords match
+        if (formData.password !== formData.confirmPassword) {
+          addToast('Passwords do not match', 'error');
+          return;
+        }
+        if (formData.password.length < 6) {
+          addToast('Password must be at least 6 characters', 'error');
+          return;
+        }
+        
+        const result = await register(formData.name, formData.email, formData.password, formData.confirmPassword, formData.role);
+        if (result.success) {
+          addToast('Registration successful! Logging in...', 'success');
+          
+          // Check if player needs to register
+          const { user, needsPlayerRegistration } = useAuthStore.getState();
+          if (needsPlayerRegistration(user)) {
+            navigate('/player-registration');
+          } else {
+            navigate('/');
+          }
+        } else {
+          addToast(result.message, 'error');
         }
       }
     } catch (error) {
-      const message = error.response?.data?.message || 'Authentication failed';
-      addToast(message, 'error');
-    } finally {
-      setLoading(false);
+      addToast('Authentication failed', 'error');
     }
   };
 
@@ -146,6 +162,23 @@ const LoginPage = () => {
             </div>
           )}
 
+          {!isLogin && (
+            <div>
+              <label className="block text-sm font-medium text-purple-200 mb-2">
+                Role
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className="w-full px-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              >
+                <option value="player">Player</option>
+                <option value="admin">Tournament Organizer</option>
+              </select>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={loading}
@@ -161,7 +194,7 @@ const LoginPage = () => {
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
-                setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+                setFormData({ name: '', email: '', password: '', confirmPassword: '', role: 'player' });
               }}
               className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
             >

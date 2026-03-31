@@ -9,6 +9,7 @@ import ToastContainer from './components/ToastContainer';
 // Auth Pages
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import PlayerRegistration from './pages/PlayerRegistration';
 
 // Main Pages
 import Dashboard from './pages/Dashboard';
@@ -20,6 +21,7 @@ import LiveScoring from './pages/LiveScoring';
 import PlayerStats from './pages/PlayerStats';
 import Leaderboard from './pages/Leaderboard';
 import Analytics from './pages/Analytics';
+import TeamManagement from './pages/TeamManagement';
 import './styles/App.css';
 
 function App() {
@@ -38,6 +40,7 @@ function App() {
         {/* Auth Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/player-registration" element={<PlayerRegistration />} />
 
         {/* Protected Routes */}
         <Route
@@ -52,6 +55,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<Dashboard />} />
                       <Route path="/players" element={<PlayerManagement />} />
+                      <Route path="/teams" element={<TeamManagement />} />
                       <Route path="/tournaments" element={<TournamentManagement />} />
                       <Route path="/games" element={<GameTemplates />} />
                       <Route path="/matches" element={<MatchScheduling />} />

@@ -10,12 +10,14 @@ import {
   FiLogOut,
   FiTrendingUp,
   FiPieChart,
+  FiUserPlus,
 } from 'react-icons/fi';
 
 const Sidebar = ({ isOpen }) => {
   const menuItems = [
     { icon: FiHome, label: 'Dashboard', path: '/' },
     { icon: FiUsers, label: 'Players', path: '/players' },
+    { icon: FiUserPlus, label: 'Teams', path: '/teams' },
     { icon: FiAward, label: 'Tournaments', path: '/tournaments' },
     { icon: FiGrid, label: 'Games', path: '/games' },
     { icon: FiCalendar, label: 'Matches', path: '/matches' },

@@ -56,6 +56,10 @@ const playerSchema = new mongoose.Schema({
       date: Date,
     },
   ],
+  teamId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
+  },
   isActive: {
     type: Boolean,
     default: true,

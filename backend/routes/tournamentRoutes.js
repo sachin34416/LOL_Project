@@ -8,8 +8,8 @@ router.get('/:id/standings', tournamentController.getTournamentStandings);
 router.post('/', tournamentController.createTournament);
 router.put('/:id', tournamentController.updateTournament);
 router.put('/:id/standings', tournamentController.updateStandings);
-router.post('/:id/register-player', tournamentController.registerPlayerToTournament);
-router.post('/:id/remove-player', tournamentController.removePlayerFromTournament);
+router.post('/:id/register-team', tournamentController.registerTeamToTournament);
+router.delete('/:id/remove-team', tournamentController.removeTeamFromTournament);
 router.delete('/:id', tournamentController.deleteTournament);
 
 module.exports = router;

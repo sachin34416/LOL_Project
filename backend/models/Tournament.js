@@ -24,10 +24,13 @@ const tournamentSchema = new mongoose.Schema({
   endDate: Date,
   location: String,
   maxPlayers: Number,
-  registeredPlayers: [
+  registeredTeams: [
     {
-      playerId: mongoose.Schema.Types.ObjectId,
-      playerName: String,
+      teamId: mongoose.Schema.Types.ObjectId,
+      teamName: String,
+      captainId: mongoose.Schema.Types.ObjectId,
+      captainName: String,
+      memberCount: Number,
       joinedAt: Date,
     },
   ],
@@ -46,12 +49,11 @@ const tournamentSchema = new mongoose.Schema({
   standings: [
     {
       position: Number,
-      playerId: mongoose.Schema.Types.ObjectId,
-      playerName: String,
+      teamId: mongoose.Schema.Types.ObjectId,
+      teamName: String,
       wins: Number,
       losses: Number,
-      pointsFor: Number,
-      pointsAgainst: Number,
+      draws: Number,
     },
   ],
   createdAt: {

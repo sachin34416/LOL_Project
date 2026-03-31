@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { FiUser, FiLock, FiMail } from 'react-icons/fi';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import useToastStore from '../store/toastStore';
+import { FiUser, FiMail, FiLock } from 'react-icons/fi';
 
 const RegisterPage = () => {
   const [formData, setFormData] = useState({
@@ -10,13 +10,12 @@ const RegisterPage = () => {
     email: '',
     password: '',
     confirmPassword: '',
+    role: 'player', // Default role
   });
-  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { register, loading } = useAuthStore();
   const addToast = useToastStore((state) => state.addToast);
-
-  const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -25,27 +24,35 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
     // Validate passwords match
     if (formData.password !== formData.confirmPassword) {
       addToast('Passwords do not match', 'error');
-      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      addToast('Password must be at least 6 characters', 'error');
       return;
     }
 
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/register`, formData);
-
-      if (response.data.success) {
-        addToast('Registration successful! Please login.', 'success');
-        navigate('/login');
+      const result = await register(formData.name, formData.email, formData.password, formData.confirmPassword, formData.role);
+      if (result.success) {
+        addToast('Registration successful! Logging in...', 'success');
+        
+        // Check if player needs to register
+        const { user, needsPlayerRegistration } = useAuthStore.getState();
+        if (needsPlayerRegistration(user)) {
+          navigate('/player-registration');
+        } else {
+          navigate('/');
+        }
+      } else {
+        addToast(result.message, 'error');
       }
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
-      addToast(message, 'error');
-    } finally {
-      setLoading(false);
+      addToast('Registration failed', 'error');
     }
   };
 
@@ -132,6 +139,21 @@ const RegisterPage = () => {
                 placeholder="Confirm your password"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-purple-200 mb-2">
+              Role
+            </label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleInputChange}
+              className="w-full px-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            >
+              <option value="player">Player</option>
+              <option value="admin">Tournament Organizer</option>
+            </select>
           </div>
 
           <button

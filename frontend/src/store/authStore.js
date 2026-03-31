@@ -34,14 +34,15 @@ export const useAuthStore = create((set) => ({
   },
 
   // Register
-  register: async (name, email, password, confirmPassword) => {
+  register: async (name, email, password, confirmPassword, role = 'player') => {
     set({ loading: true, error: null });
     try {
       const response = await apiClient.post('/auth/register', { 
         name, 
         email, 
         password, 
-        confirmPassword 
+        confirmPassword,
+        role
       });
       const { user, token } = response.data.data;
       
@@ -101,6 +102,16 @@ export const useAuthStore = create((set) => ({
 
   // Clear error
   clearError: () => set({ error: null }),
+
+  // Check if player needs to register (is player role but no playerId)
+  needsPlayerRegistration: (user) => {
+    return user && user.role === 'player' && !user.playerId;
+  },
+
+  // Update user in store
+  setUser: (user) => {
+    set({ user });
+  },
 
   // Set user from localStorage
   initializeAuth: () => {

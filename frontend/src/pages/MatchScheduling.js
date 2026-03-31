@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMatchStore } from '../store/matchStore';
 import { useTournamentStore } from '../store/tournamentStore';
+import { useTeamStore } from '../store/teamStore';
 import { usePlayerStore } from '../store/playerStore';
 import { matchAPI, tournamentAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiPlay } from 'react-icons/fi';
@@ -16,6 +17,9 @@ const MatchScheduling = () => {
   const tournaments = useTournamentStore((state) => state.tournaments);
   const fetchAllTournaments = useTournamentStore((state) => state.fetchAllTournaments);
 
+  const teams = useTeamStore((state) => state.teams);
+  const fetchAllTeams = useTeamStore((state) => state.fetchAllTeams);
+
   const players = usePlayerStore((state) => state.players);
   const fetchAllPlayers = usePlayerStore((state) => state.fetchAllPlayers);
 
@@ -23,6 +27,7 @@ const MatchScheduling = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [selectedTeams, setSelectedTeams] = useState(['', '']); // Teams for player 1 and 2
   const [formData, setFormData] = useState({
     tournamentId: '',
     gameId: '',
@@ -35,6 +40,7 @@ const MatchScheduling = () => {
   useEffect(() => {
     fetchAllMatches();
     fetchAllTournaments();
+    fetchAllTeams();
     fetchAllPlayers();
   }, []);
 
@@ -54,6 +60,16 @@ const MatchScheduling = () => {
     }));
   };
 
+  const handleTeamChange = (index, teamId) => {
+    const newTeams = [...selectedTeams];
+    newTeams[index] = teamId;
+    setSelectedTeams(newTeams);
+    // Reset player selection when team changes
+    const newPlayers = [...formData.players];
+    newPlayers[index] = { playerId: '', playerName: '' };
+    setFormData((prev) => ({ ...prev, players: newPlayers }));
+  };
+
   const handlePlayerChange = (index, field, value) => {
     const newPlayers = [...formData.players];
     if (field === 'playerId') {
@@ -65,6 +81,24 @@ const MatchScheduling = () => {
     setFormData((prev) => ({ ...prev, players: newPlayers }));
   };
 
+  const getTeamPlayers = (teamId) => {
+    if (!teamId) return [];
+    const team = teams.find((t) => t._id === teamId);
+    if (!team || !team.members || team.members.length === 0) return [];
+    
+    return team.members
+      .map((member) => {
+        // Members are already full objects from backend population
+        if (typeof member === 'object' && member._id && member.name) {
+          return member;
+        }
+        // Fallback: if member is just an ID, find it in players array
+        const id = typeof member === 'string' ? member : member._id;
+        return players.find((p) => p._id === id || p._id?.toString() === id?.toString());
+      })
+      .filter(Boolean);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -72,6 +106,7 @@ const MatchScheduling = () => {
       addMatch(response.data.data);
       addToast('Match scheduled successfully!', 'success');
       setShowModal(false);
+      setSelectedTeams(['', '']);
       setFormData({
         tournamentId: '',
         gameId: '',
@@ -121,7 +156,10 @@ const MatchScheduling = () => {
           <p className="text-purple-200 mt-2\">Schedule and manage tournament matches</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            setShowModal(true);
+            setSelectedTeams(['', '']);
+          }}
           className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 flex items-center gap-2 shadow-lg transition-all hover:shadow-2xl"
         >
           <FiPlus /> Schedule Match
@@ -251,7 +289,24 @@ const MatchScheduling = () => {
               <div className="border-t border-purple-700/30 pt-4">
                 <h3 className="text-lg font-semibold text-amber-400 mb-4">Players</h3>
                 {formData.players.map((player, index) => (
-                  <div key={index} className="mb-4">
+                  <div key={index} className="mb-6 p-4 bg-slate-700/30 rounded-lg border border-purple-700/50">
+                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                      Player {index + 1} Team *
+                    </label>
+                    <select
+                      value={selectedTeams[index]}
+                      onChange={(e) => handleTeamChange(index, e.target.value)}
+                      required
+                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4"
+                    >
+                      <option value="">Select a team</option>
+                      {teams.map((team) => (
+                        <option key={team._id} value={team._id}>
+                          {team.name} ({team.members.length} members)
+                        </option>
+                      ))}
+                    </select>
+
                     <label className="block text-sm font-medium text-purple-200 mb-2">
                       Player {index + 1} *
                     </label>
@@ -259,10 +314,13 @@ const MatchScheduling = () => {
                       value={player.playerId}
                       onChange={(e) => handlePlayerChange(index, 'playerId', e.target.value)}
                       required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                      disabled={!selectedTeams[index]}
+                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <option value="">Select a player</option>
-                      {players.map((p) => (
+                      <option value="">
+                        {!selectedTeams[index] ? 'Select a team first' : 'Select a player'}
+                      </option>
+                      {selectedTeams[index] && getTeamPlayers(selectedTeams[index]).map((p) => (
                         <option key={p._id} value={p._id}>
                           {p.name}
                         </option>
@@ -281,7 +339,10 @@ const MatchScheduling = () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => setShowModal(false)}
+                  onClick={() => {
+                    setShowModal(false);
+                    setSelectedTeams(['', '']);
+                  }}
                   className="flex-1 bg-slate-700/50 text-purple-200 py-2 rounded-lg hover:bg-slate-600/50 font-medium transition-all border border-purple-700/50"
                 >
                   Cancel

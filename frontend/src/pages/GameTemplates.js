@@ -38,6 +38,15 @@ const GameTemplates = () => {
 
   const categories = ['all', 'sets-based', 'goals-based', 'points-based', 'turns-based', 'time-based'];
 
+  // Define predefined games by category
+  const predefinedGamesByCategory = {
+    'sets-based': ['Badminton', 'Tennis', 'Volleyball', 'Pickleball'],
+    'goals-based': ['Football', 'Hockey', 'Basketball'],
+    'points-based': ['Carrom', 'Badminton'],
+    'turns-based': ['Pool', 'Foosball', 'Chess'],
+    'time-based': ['Cricket', 'Racing', 'Esports'],
+  };
+
   // Define custom fields for each game type
   const customFieldsConfig = {
     'Pickleball': [
@@ -57,6 +66,25 @@ const GameTemplates = () => {
     'Volleyball': [
       { name: 'pointsToWin', label: 'Points to Win Set', type: 'number', default: 25 },
       { name: 'setsPerMatch', label: 'Sets Per Match', type: 'number', default: 5 },
+    ],
+    'Cricket': [
+      { name: 'format', label: 'Match Format', type: 'select', default: 'ODI', options: ['T20', 'ODI', 'Test Match'] },
+      { name: 'oversPerMatch', label: 'Overs Per Match', type: 'number', default: 20 },
+      { name: 'ballsPerOver', label: 'Balls Per Over', type: 'number', default: 6 },
+      { name: 'wicketsPerTeam', label: 'Total Wickets Per Team', type: 'number', default: 10 },
+      { name: 'maxRunsPerOver', label: 'Max Runs Per Over (Optional)', type: 'number', default: null },
+      { name: 'allowBoundaries', label: 'Allow Boundaries (4s & 6s)?', type: 'checkbox', default: true },
+      { name: 'trackWides', label: 'Track Wide Balls?', type: 'checkbox', default: true },
+      { name: 'trackNoBalls', label: 'Track No Balls?', type: 'checkbox', default: true },
+    ],
+    'Football': [
+      { name: 'matchDuration', label: 'Match Duration (minutes)', type: 'number', default: 90 },
+      { name: 'halves', label: 'Number of Halves', type: 'number', default: 2 },
+      { name: 'breakDuration', label: 'Break Duration Between Halves (minutes)', type: 'number', default: 15 },
+      { name: 'allowExtraTime', label: 'Allow Extra Time?', type: 'checkbox', default: true },
+      { name: 'extraTimeDuration', label: 'Extra Time Duration (minutes)', type: 'number', default: 30 },
+      { name: 'allowPenaltyShootout', label: 'Allow Penalty Shootout?', type: 'checkbox', default: true },
+      { name: 'maxGoalsDisplay', label: 'Display Max Goals Allowed?', type: 'checkbox', default: false },
     ],
   };
 
@@ -187,41 +215,41 @@ const GameTemplates = () => {
 
   const getCategoryColor = (category) => {
     const colors = {
-      'sets-based': 'from-slate-700/40 to-purple-700/40 border-purple-600/50',
-      'goals-based': 'from-slate-700/40 to-purple-700/40 border-purple-600/50',
-      'points-based': 'from-slate-700/40 to-purple-700/40 border-purple-600/50',
-      'turns-based': 'from-slate-700/40 to-purple-700/40 border-purple-600/50',
-      'time-based': 'from-slate-700/40 to-purple-700/40 border-purple-600/50',
+      'sets-based': 'from-red-50 to-red-100 border-red-300',
+      'goals-based': 'from-red-50 to-red-100 border-red-300',
+      'points-based': 'from-red-50 to-red-100 border-red-300',
+      'turns-based': 'from-red-50 to-red-100 border-red-300',
+      'time-based': 'from-red-50 to-red-100 border-red-300',
     };
-    return colors[category] || 'from-slate-700/40 to-purple-700/40 border-purple-600/50';
+    return colors[category] || 'from-red-50 to-red-100 border-red-300';
   };
 
   const getCategoryBadgeColor = (category) => {
     const colors = {
-      'sets-based': 'bg-amber-500/30 text-amber-200 border border-amber-500/50',
-      'goals-based': 'bg-purple-500/30 text-purple-200 border border-purple-500/50',
-      'points-based': 'bg-orange-500/30 text-orange-200 border border-orange-500/50',
-      'turns-based': 'bg-amber-500/30 text-amber-200 border border-amber-500/50',
-      'time-based': 'bg-purple-500/30 text-purple-200 border border-purple-500/50',
+      'sets-based': 'bg-red-100 text-red-800 border border-red-400',
+      'goals-based': 'bg-red-100 text-red-800 border border-red-400',
+      'points-based': 'bg-red-100 text-red-800 border border-red-400',
+      'turns-based': 'bg-red-100 text-red-800 border border-red-400',
+      'time-based': 'bg-red-100 text-red-800 border border-red-400',
     };
-    return colors[category] || 'bg-purple-500/30 text-purple-200 border border-purple-500/50';
+    return colors[category] || 'bg-red-100 text-red-800 border border-red-400';
   };
 
   return (
-    <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">
-      <div className="flex justify-between items-center mb-8 bg-slate-800/40 backdrop-blur-xl rounded-lg p-6 shadow-lg border border-purple-700/50">
+    <div className="p-8 bg-white min-h-screen overflow-y-auto flex flex-col">
+      <div className="flex justify-between items-center mb-8 bg-red-50 rounded-lg p-6 shadow border border-red-200">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold text-red-600">
             Game Templates
           </h1>
-          <p className="text-purple-200 mt-2">Create and manage custom game templates with dynamic scoring systems</p>
+          <p className="text-gray-700 mt-2">Create and manage custom game templates with dynamic scoring systems</p>
         </div>
         <button
           onClick={() => {
             resetForm();
             setShowModal(true);
           }}
-          className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 flex items-center gap-2 shadow-lg transition-all hover:shadow-2xl"
+          className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 flex items-center gap-2 shadow transition-all hover:shadow-lg"
         >
           <FiPlus size={20} /> Create Template
         </button>
@@ -235,8 +263,8 @@ const GameTemplates = () => {
             onClick={() => setSelectedCategory(cat)}
             className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
               selectedCategory === cat
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg border border-amber-400/50'
-                : 'bg-slate-800/40 text-purple-200 hover:bg-slate-700/40 border border-purple-700/50'
+                ? 'bg-red-600 text-white shadow border border-red-700'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
             }`}
           >
             {cat === 'all' ? 'All Games' : cat.replace('-', ' ')}
@@ -300,24 +328,24 @@ const GameTemplates = () => {
             </div>
           ))
         ) : (
-          <div className="col-span-full bg-slate-800/40 backdrop-blur-xl rounded-lg p-12 text-center border border-purple-700/50">
-            <p className="text-purple-200 text-lg">No game templates found. Create one to get started!</p>
+          <div className="col-span-full bg-red-50 rounded-lg p-12 text-center border border-red-200">
+            <p className="text-gray-700 text-lg">No game templates found. Create one to get started!</p>
           </div>
         )}
       </div>
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800/90 backdrop-blur-xl rounded-lg shadow-2xl p-8 max-w-3xl w-full max-h-[95vh] overflow-y-auto border border-purple-700/50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl p-8 max-w-3xl w-full max-h-[95vh] overflow-y-auto border border-gray-300">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold text-red-600">
                 {editingId ? 'Edit Game Template' : 'Create New Game Template'}
               </h2>
               <button
                 onClick={() => !loading && setShowModal(false)}
                 disabled={loading}
-                className="text-purple-300 hover:text-amber-400 transition-colors disabled:opacity-50"
+                className="text-gray-600 hover:text-red-600 transition-colors disabled:opacity-50"
               >
                 <FiX size={24} />
               </button>
@@ -326,10 +354,10 @@ const GameTemplates = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Basic Info Section */}
               <div className="border-b border-purple-700/30 pb-6">
-                <h3 className="text-lg font-semibold text-amber-400 mb-4">Basic Information</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-4">Basic Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Game Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Game Name *</label>
                     <input
                       type="text"
                       name="name"
@@ -337,16 +365,16 @@ const GameTemplates = () => {
                       onChange={handleInputChange}
                       placeholder="e.g., Pickleball, Tennis"
                       required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white placeholder-purple-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Category *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Category *</label>
                     <select
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     >
                       <option value="sets-based">Sets-based (Badminton, Volleyball)</option>
                       <option value="goals-based">Goals-based (Football, Hockey)</option>
@@ -357,43 +385,68 @@ const GameTemplates = () => {
                   </div>
                 </div>
 
+                {/* Suggested Games */}
+                {formData.category && predefinedGamesByCategory[formData.category] && (
+                  <div className="mt-4">
+                    <label className="block text-sm font-medium text-gray-700 mb-3">Popular Games in this Category</label>
+                    <div className="flex flex-wrap gap-2">
+                      {predefinedGamesByCategory[formData.category].map((game) => (
+                        <button
+                          key={game}
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({ ...prev, name: game }));
+                          }}
+                          className={`px-4 py-2 rounded-lg font-medium transition-all border ${
+                            formData.name === game
+                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white border-amber-400/50 shadow-lg'
+                              : 'bg-white text-gray-900 border border-gray-300 hover:border-red-500 hover:bg-red-50'
+                          }`}
+                        >
+                          {game}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="mt-4">
-                  <label className="block text-sm font-medium text-purple-200 mb-2">Description</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
                   <textarea
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
                     placeholder="Describe the game and its rules..."
                     rows="3"
-                    className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white placeholder-purple-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                    className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                   />
                 </div>
               </div>
 
               {/* Player Configuration */}
               <div className="border-b border-purple-700/30 pb-6">
-                <h3 className="text-lg font-semibold text-amber-400 mb-4">Player Configuration</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-4">Player Configuration</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Minimum Players</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Minimum Players</label>
                     <input
                       type="number"
                       name="min"
                       value={formData.players.min}
                       onChange={handlePlayerCountChange}
                       min="1"
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Maximum Players</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Maximum Players</label>
                     <input
                       type="number"
                       name="max"
                       value={formData.players.max}
                       onChange={handlePlayerCountChange}
                       min="1"
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -401,26 +454,26 @@ const GameTemplates = () => {
 
               {/* Scoring System Section */}
               <div className="border-b border-purple-700/30 pb-6">
-                <h3 className="text-lg font-semibold text-amber-400 mb-4">Scoring System</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-4">Scoring System</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Max Score</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Max Score</label>
                     <input
                       type="number"
                       name="maxScore"
                       value={formData.scoringSystem.maxScore}
                       onChange={handleScoringSystemChange}
                       min="1"
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Win Condition</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Win Condition</label>
                     <select
                       name="winCondition"
                       value={formData.scoringSystem.winCondition}
                       onChange={handleScoringSystemChange}
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     >
                       <option value="highest-score">Highest Score</option>
                       <option value="first-to-value">First to Value</option>
@@ -428,25 +481,25 @@ const GameTemplates = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Sets Per Match</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Sets Per Match</label>
                     <input
                       type="number"
                       name="setsPerMatch"
                       value={formData.scoringSystem.setsPerMatch}
                       onChange={handleScoringSystemChange}
                       min="1"
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-purple-200 mb-2">Points Per Set</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Points Per Set</label>
                     <input
                       type="number"
                       name="pointsPerSet"
                       value={formData.scoringSystem.pointsPerSet}
                       onChange={handleScoringSystemChange}
                       min="1"
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                     />
                   </div>
                 </div>
@@ -457,9 +510,9 @@ const GameTemplates = () => {
                       name="deucesAllowed"
                       checked={formData.scoringSystem.deucesAllowed}
                       onChange={handleScoringSystemChange}
-                      className="w-4 h-4 text-amber-500 rounded focus:ring-2 focus:ring-amber-500"
+                      className="w-4 h-4 text-red-600 rounded focus:ring-2 focus:ring-red-600"
                     />
-                    <span className="text-sm font-medium text-purple-200">Allow Deuces (continuous play at tie)</span>
+                    <span className="text-sm font-medium text-gray-700">Allow Deuces (continuous play at tie)</span>
                   </label>
                 </div>
               </div>
@@ -467,7 +520,7 @@ const GameTemplates = () => {
               {/* Custom Fields Section */}
               {customFieldsConfig[formData.name] && (
                 <div className="border-b border-purple-700/30 pb-6 bg-purple-900/30 p-4 rounded-lg border">
-                  <h3 className="text-lg font-semibold text-amber-400 mb-4">Custom Settings for {formData.name}</h3>
+                  <h3 className="text-lg font-semibold text-red-600 mb-4">Custom Settings for {formData.name}</h3>
                   <div className="space-y-4">
                     {customFieldsConfig[formData.name].map((field) => (
                       <div key={field.name}>
@@ -478,19 +531,35 @@ const GameTemplates = () => {
                               name={field.name}
                               checked={formData.customFields[field.name] !== undefined ? formData.customFields[field.name] : field.default}
                               onChange={handleCustomFieldChange}
-                              className="w-4 h-4 text-amber-500 rounded focus:ring-2 focus:ring-amber-500"
+                              className="w-4 h-4 text-red-600 rounded focus:ring-2 focus:ring-red-600"
                             />
-                            <span className="text-sm font-medium text-purple-200">{field.label}</span>
+                            <span className="text-sm font-medium text-gray-700">{field.label}</span>
                           </label>
-                        ) : (
+                        ) : field.type === 'select' ? (
                           <>
-                            <label className="block text-sm font-medium text-purple-200 mb-2">{field.label}</label>
-                            <input
-                              type={field.type}
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{field.label}</label>
+                            <select
                               name={field.name}
                               value={formData.customFields[field.name] !== undefined ? formData.customFields[field.name] : field.default}
                               onChange={handleCustomFieldChange}
-                              className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all"
+                              className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
+                            >
+                              {field.options.map((option) => (
+                                <option key={option} value={option}>
+                                  {option}
+                                </option>
+                              ))}
+                            </select>
+                          </>
+                        ) : (
+                          <>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">{field.label}</label>
+                            <input
+                              type={field.type}
+                              name={field.name}
+                              value={formData.customFields[field.name] !== undefined ? formData.customFields[field.name] : (field.default || '')}
+                              onChange={handleCustomFieldChange}
+                              className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent transition-all"
                             />
                           </>
                         )}
@@ -513,7 +582,7 @@ const GameTemplates = () => {
                   type="button"
                   onClick={() => !loading && setShowModal(false)}
                   disabled={loading}
-                  className="flex-1 bg-slate-700/50 text-purple-200 py-3 rounded-lg hover:bg-slate-600/50 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-purple-700/50"
+                  className="flex-1 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300"
                 >
                   Cancel
                 </button>

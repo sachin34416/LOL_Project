@@ -57,123 +57,122 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-2xl p-8 w-full max-w-md border border-purple-700/50">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md border border-gray-300">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold text-red-600 mb-2">
             League of Legends
           </h1>
-          <p className="text-purple-200">Create your account</p>
+          <p className="text-gray-700">Create your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Name
             </label>
             <div className="relative">
-              <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
+              <FiUser className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 required
-                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-gray-500"
                 placeholder="Enter your name"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
             <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
+              <FiMail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 required
-                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-gray-500"
                 placeholder="Enter your email"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
+              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleInputChange}
                 required
-                minLength="6"
-                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
-                placeholder="Enter your password (min 6 characters)"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-gray-500"
+                placeholder="Enter your password"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Confirm Password
             </label>
             <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400" />
+              <FiLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
               <input
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
                 onChange={handleInputChange}
                 required
-                minLength="6"
-                className="w-full pl-10 pr-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+                className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-gray-500"
                 placeholder="Confirm your password"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               Role
             </label>
             <select
               name="role"
               value={formData.role}
               onChange={handleInputChange}
-              className="w-full px-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent"
             >
               <option value="player">Player</option>
-              <option value="admin">Tournament Organizer</option>
+              <option value="organizer">Tournament Organizer</option>
+              <option value="franchise_owner">Franchise Owner</option>
             </select>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow"
           >
-            {loading ? 'Creating Account...' : 'Register'}
+            {loading ? 'Processing...' : 'Register'}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-purple-200">
+          <p className="text-gray-700">
             Already have an account?{' '}
-            <button
-              onClick={() => navigate('/login')}
-              className="text-amber-400 hover:text-amber-300 font-medium transition-colors"
+            <Link
+              to="/login"
+              className="text-red-600 hover:text-red-700 font-medium transition-colors"
             >
               Login
-            </button>
+            </Link>
           </p>
         </div>
       </div>

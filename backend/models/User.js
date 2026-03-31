@@ -20,8 +20,12 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['player', 'organizer', 'admin'],
+    enum: ['player', 'organizer', 'admin', 'franchise_owner'],
     default: 'player',
+  },
+  franchiseId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Team',
   },
   avatar: String,
   phone: String,

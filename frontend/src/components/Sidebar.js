@@ -28,12 +28,12 @@ const Sidebar = ({ isOpen }) => {
 
   return (
     <aside
-      className={`bg-gradient-to-b from-slate-950 via-purple-950/80 to-slate-950 text-purple-100 transition-all duration-300 ${
+      className={`bg-white text-gray-800 transition-all duration-300 ${
         isOpen ? 'w-64' : 'w-20'
-      } min-h-screen flex flex-col border-r border-purple-800/30`}
+      } min-h-screen flex flex-col border-r border-gray-200 shadow-sm`}
     >
-      <div className="p-6 border-b border-purple-800/30 bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 backdrop-blur-sm">
-        <h2 className={`font-black text-2xl bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent ${isOpen ? 'block' : 'hidden'} tracking-tight`}>
+      <div className="p-6 border-b border-gray-200 bg-red-600">
+        <h2 className={`font-black text-2xl text-white ${isOpen ? 'block' : 'hidden'} tracking-tight`}>
           LoL
         </h2>
       </div>
@@ -43,17 +43,17 @@ const Sidebar = ({ isOpen }) => {
           <Link
             key={item.path}
             to={item.path}
-            className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-purple-800/40 transition-all duration-200 hover:border-l-2 hover:border-amber-400 group"
+            className="flex items-center gap-4 px-4 py-3 rounded-lg hover:bg-red-50 transition-all duration-200 hover:border-l-2 hover:border-red-600 group"
           >
-            <item.icon className="text-lg flex-shrink-0 text-purple-400/70 group-hover:text-amber-400 transition-colors" />
-            <span className={`${isOpen ? 'block' : 'hidden'} text-purple-200 group-hover:text-amber-300 font-medium`}>{item.label}</span>
+            <item.icon className="text-lg flex-shrink-0 text-gray-600 group-hover:text-red-600 transition-colors" />
+            <span className={`${isOpen ? 'block' : 'hidden'} text-gray-700 group-hover:text-red-600 font-medium`}>{item.label}</span>
           </Link>
         ))}
       </nav>
 
-      <div className="p-4 border-t border-purple-800/30 bg-gradient-to-r from-slate-950 to-purple-950/50 backdrop-blur-sm">
-        <button className="flex items-center gap-4 px-4 py-3 w-full rounded-lg hover:bg-red-900/30 transition-all duration-200 hover:text-red-400 text-purple-300 group">
-          <FiLogOut className="text-lg flex-shrink-0 group-hover:text-red-400 transition-colors" />
+      <div className="p-4 border-t border-gray-200 bg-gray-50">
+        <button className="flex items-center gap-4 px-4 py-3 w-full rounded-lg hover:bg-red-100 transition-all duration-200 hover:text-red-600 text-gray-700 group">
+          <FiLogOut className="text-lg flex-shrink-0 group-hover:text-red-600 transition-colors" />
           <span className={isOpen ? 'block' : 'hidden'}>Logout</span>
         </button>
       </div>

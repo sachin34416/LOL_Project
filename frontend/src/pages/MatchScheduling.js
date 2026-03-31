@@ -3,11 +3,14 @@ import { useMatchStore } from '../store/matchStore';
 import { useTournamentStore } from '../store/tournamentStore';
 import { useTeamStore } from '../store/teamStore';
 import { usePlayerStore } from '../store/playerStore';
+import { useAuthStore } from '../store/authStore';
 import { matchAPI, tournamentAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiPlay } from 'react-icons/fi';
 import useToastStore from '../store/toastStore';
+import { roleCheck } from '../utils/roleCheck';
 
 const MatchScheduling = () => {
+  const { user } = useAuthStore();
   const matches = useMatchStore((state) => state.matches);
   const fetchAllMatches = useMatchStore((state) => state.fetchAllMatches);
   const addMatch = useMatchStore((state) => state.addMatch);
@@ -24,6 +27,9 @@ const MatchScheduling = () => {
   const fetchAllPlayers = usePlayerStore((state) => state.fetchAllPlayers);
 
   const addToast = useToastStore((state) => state.addToast);
+
+  // Role-based checks
+  const canScheduleMatches = roleCheck.canEditMatches(user);
 
   const [showModal, setShowModal] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -133,13 +139,13 @@ const MatchScheduling = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'scheduled':
-        return 'bg-amber-500/30 text-amber-200 border border-amber-500/50';
+        return 'bg-red-100 text-red-800 border border-red-300';
       case 'ongoing':
-        return 'bg-green-500/30 text-green-200 border border-green-500/50';
+        return 'bg-green-100 text-green-800 border border-green-300';
       case 'completed':
-        return 'bg-slate-500/30 text-slate-200 border border-slate-500/50';
+        return 'bg-gray-100 text-gray-800 border border-gray-300';
       default:
-        return 'bg-slate-500/30 text-slate-200 border border-slate-500/50';
+        return 'bg-gray-100 text-gray-800 border border-gray-300';
     }
   };
 
@@ -149,21 +155,23 @@ const MatchScheduling = () => {
       : matches.filter((m) => m.status === selectedStatus);
 
   return (
-    <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">
-      <div className="flex justify-between items-center mb-8 bg-slate-800/40 backdrop-blur-xl rounded-lg p-6 shadow-lg border border-purple-700/50">
+    <div className="p-8 bg-white min-h-screen overflow-y-auto flex flex-col">
+      <div className="flex justify-between items-center mb-8 bg-red-50 rounded-lg p-6 shadow border border-red-200">
         <div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent\">Match Scheduling</h1>
-          <p className="text-purple-200 mt-2\">Schedule and manage tournament matches</p>
+          <h1 className="text-3xl font-bold text-red-600">Match Scheduling</h1>
+          <p className="text-gray-700 mt-2">Schedule and manage tournament matches</p>
         </div>
-        <button
-          onClick={() => {
-            setShowModal(true);
-            setSelectedTeams(['', '']);
-          }}
-          className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 flex items-center gap-2 shadow-lg transition-all hover:shadow-2xl"
-        >
-          <FiPlus /> Schedule Match
-        </button>
+        {canScheduleMatches && (
+          <button
+            onClick={() => {
+              setShowModal(true);
+              setSelectedTeams(['', '']);
+            }}
+            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 flex items-center gap-2 shadow transition-all hover:shadow-lg"
+          >
+            <FiPlus /> Schedule Match
+          </button>
+        )}
       </div>
 
       {/* Status Filter */}
@@ -174,8 +182,8 @@ const MatchScheduling = () => {
             onClick={() => setSelectedStatus(status)}
             className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
               selectedStatus === status
-                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg border border-amber-400/50'
-                : 'bg-slate-800/40 text-purple-200 hover:bg-slate-700/40 border border-purple-700/50'
+                ? 'bg-red-600 text-white shadow border border-red-700'
+                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
             }`}
           >
             {status === 'all' ? 'All Matches' : status}
@@ -184,10 +192,10 @@ const MatchScheduling = () => {
       </div>
 
       {/* Matches Table */}
-      <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg border border-purple-700/50 overflow-y-auto flex-1 flex flex-col">
+      <div className="bg-white rounded-lg shadow border border-gray-200 overflow-y-auto flex-1 flex flex-col">
         <div className="overflow-x-auto overflow-y-auto flex-1">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-amber-600 to-orange-600 text-white sticky top-0">
+            <thead className="bg-red-600 text-white sticky top-0">
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Game</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Players</th>
@@ -197,35 +205,35 @@ const MatchScheduling = () => {
                 <th className="px-6 py-3 text-left text-sm font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-purple-700/30">
+            <tbody className="divide-y divide-gray-200">
               {filteredMatches.map((match) => (
-                <tr key={match._id} className="hover:bg-purple-700/30 transition-colors bg-slate-700/20">
-                  <td className="px-6 py-4 text-sm font-medium text-amber-300">{match.gameName}</td>
-                  <td className="px-6 py-4 text-sm text-purple-300">
+                <tr key={match._id} className="hover:bg-gray-50 transition-colors bg-white">
+                  <td className="px-6 py-4 text-sm font-medium text-red-600">{match.gameName}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700">
                     {match.players.map((p) => p.playerName).join(' vs ')}
                   </td>
-                  <td className="px-6 py-4 text-sm text-purple-300">
+                  <td className="px-6 py-4 text-sm text-gray-700">
                     {new Date(match.scheduledAt).toLocaleString()}
                   </td>
-                  <td className="px-6 py-4 text-sm text-purple-300">{match.court || '-'}</td>
+                  <td className="px-6 py-4 text-sm text-gray-700">{match.court || '-'}</td>
                   <td className="px-6 py-4 text-sm">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold capitalize ${getStatusColor(match.status)}`}>
                       {match.status}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-sm flex gap-2">
-                    {match.status === 'scheduled' && (
+                    {canScheduleMatches && match.status === 'scheduled' && (
                       <button
                         onClick={() => handleStartMatch(match._id)}
-                        className="text-green-400 hover:text-green-300 transition-colors"
+                        className="text-green-600 hover:text-green-700 transition-colors"
                         title="Start Match"
                       >
                         <FiPlay />
                       </button>
                     )}
-                    {match.status !== 'completed' && (
+                    {canScheduleMatches && match.status !== 'completed' && (
                       <button
-                        className="text-amber-400 hover:text-amber-300 transition-colors"
+                        className="text-red-600 hover:text-red-700 transition-colors"
                         title="Edit Match"
                       >
                         <FiEdit2 />
@@ -242,17 +250,17 @@ const MatchScheduling = () => {
       {/* Create Match Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-800/90 backdrop-blur-xl rounded-lg shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-purple-700/50">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-6">Schedule New Match</h2>
+          <div className="bg-white backdrop-blur-xl rounded-lg shadow-2xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-300">
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent mb-6">Schedule New Match</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-purple-200 mb-2">Tournament *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Tournament *</label>
                 <select
                   name="tournamentId"
                   value={formData.tournamentId}
                   onChange={handleTournamentSelect}
                   required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 >
                   <option value="">Select a tournament</option>
                   {tournaments.map((tournament) => (
@@ -264,40 +272,40 @@ const MatchScheduling = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-purple-200 mb-2">Scheduled Time *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Scheduled Time *</label>
                 <input
                   type="datetime-local"
                   name="scheduledAt"
                   value={formData.scheduledAt}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-purple-200 mb-2">Court/Venue</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Court/Venue</label>
                 <input
                   type="text"
                   name="court"
                   value={formData.court}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white placeholder-purple-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+                  className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 placeholder-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
                 />
               </div>
 
               <div className="border-t border-purple-700/30 pt-4">
-                <h3 className="text-lg font-semibold text-amber-400 mb-4">Players</h3>
+                <h3 className="text-lg font-semibold text-red-600 mb-4">Players</h3>
                 {formData.players.map((player, index) => (
-                  <div key={index} className="mb-6 p-4 bg-slate-700/30 rounded-lg border border-purple-700/50">
-                    <label className="block text-sm font-medium text-purple-200 mb-2">
+                  <div key={index} className="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-300">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
                       Player {index + 1} Team *
                     </label>
                     <select
                       value={selectedTeams[index]}
                       onChange={(e) => handleTeamChange(index, e.target.value)}
                       required
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent mb-4"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent mb-4"
                     >
                       <option value="">Select a team</option>
                       {teams.map((team) => (
@@ -315,7 +323,7 @@ const MatchScheduling = () => {
                       onChange={(e) => handlePlayerChange(index, 'playerId', e.target.value)}
                       required
                       disabled={!selectedTeams[index]}
-                      className="w-full px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <option value="">
                         {!selectedTeams[index] ? 'Select a team first' : 'Select a player'}
@@ -343,7 +351,7 @@ const MatchScheduling = () => {
                     setShowModal(false);
                     setSelectedTeams(['', '']);
                   }}
-                  className="flex-1 bg-slate-700/50 text-purple-200 py-2 rounded-lg hover:bg-slate-600/50 font-medium transition-all border border-purple-700/50"
+                  className="flex-1 bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 font-medium transition-all border border-gray-300"
                 >
                   Cancel
                 </button>

@@ -58,26 +58,26 @@ const PlayerRegistration = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
-      <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-2xl p-8 w-full max-w-md border border-purple-700/50">
+    <div className="min-h-screen bg-gradient-to-br from-white to-gray-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg shadow-xl p-8 w-full max-w-md border border-gray-300">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
+          <h1 className="text-3xl font-bold text-red-600 mb-2">
             Player Registration
           </h1>
-          <p className="text-purple-200">
+          <p className="text-gray-700">
             Complete your player profile to get started
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-slate-700/30 border border-purple-700/30 rounded-lg p-4">
-            <p className="text-purple-200 text-sm">
-              <span className="font-semibold text-amber-400">{user?.name}</span> ({user?.email})
+          <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+            <p className="text-gray-700 text-sm">
+              <span className="font-semibold text-red-600">{user?.name}</span> ({user?.email})
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-purple-200 mb-2">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
               <FiPhone className="inline mr-2" />
               Phone Number
             </label>
@@ -87,14 +87,14 @@ const PlayerRegistration = () => {
               value={formData.phone}
               onChange={handleInputChange}
               placeholder="Enter your phone number"
-              className="w-full px-4 py-3 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent placeholder-purple-400"
+              className="w-full px-4 py-3 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-gray-500"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 disabled:from-gray-500 disabled:to-gray-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-500 text-white font-semibold py-3 rounded-lg transition-all duration-300 flex items-center justify-center gap-2"
           >
             {loading ? (
               <>
@@ -112,7 +112,7 @@ const PlayerRegistration = () => {
           <button
             type="button"
             onClick={handleSkip}
-            className="w-full text-purple-300 hover:text-amber-400 font-semibold py-2 transition-colors"
+            className="w-full text-gray-600 hover:text-red-600 font-semibold py-2 transition-colors"
           >
             Skip for now
           </button>

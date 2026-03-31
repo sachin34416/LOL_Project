@@ -102,13 +102,13 @@ const Leaderboard = () => {
     : matches.filter(m => m.tournamentId === selectedTournament).length;
 
   return (
-    <div className="p-8 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 min-h-screen overflow-y-auto flex flex-col">
+    <div className="p-8 bg-gradient-to-br from-white to-gray-50 min-h-screen overflow-y-auto flex flex-col">
       {/* Header */}
-      <div className="mb-8 bg-slate-800/40 backdrop-blur-xl rounded-lg p-6 shadow-lg border border-purple-700/50">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
-          🏆 Leaderboard
+      <div className="mb-8 bg-white backdrop-blur-xl rounded-lg p-6 shadow-lg border border-gray-300">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-red-600 to-red-600 bg-clip-text text-transparent mb-2">
+          Trophy Leaderboard
         </h1>
-        <p className="text-purple-200">Global player rankings and statistics</p>
+        <p className="text-gray-700">Global player rankings and statistics</p>
       </div>
 
       {/* Statistics Cards */}
@@ -139,11 +139,11 @@ const Leaderboard = () => {
       )}
 
       {/* Filters */}
-      <div className="mb-8 bg-slate-800/40 backdrop-blur-xl rounded-lg p-6 shadow-lg border border-purple-700/50">
+      <div className="mb-8 bg-white backdrop-blur-xl rounded-lg p-6 shadow-lg border border-gray-300">
         <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
           <div className="flex items-center gap-2">
-            <FiFilter className="text-amber-400" />
-            <label className="font-semibold text-purple-200">Sort By:</label>
+            <FiFilter className="text-red-600" />
+            <label className="font-semibold text-gray-700">Sort By:</label>
           </div>
           <div className="flex flex-wrap gap-2">
             {[
@@ -157,7 +157,7 @@ const Leaderboard = () => {
                 className={`px-4 py-2 rounded-lg font-medium transition-all ${
                   sortBy === option.value
                     ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg border border-amber-400/50'
-                    : 'bg-slate-700/40 text-purple-200 hover:bg-slate-600/40 border border-purple-700/50'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
                 }`}
               >
                 {option.label}
@@ -166,11 +166,11 @@ const Leaderboard = () => {
           </div>
 
           <div className="ml-auto">
-            <label className="font-semibold text-purple-200 mr-3">Tournament:</label>
+            <label className="font-semibold text-gray-700 mr-3">Tournament:</label>
             <select
               value={selectedTournament}
               onChange={(e) => setSelectedTournament(e.target.value)}
-              className="px-4 py-2 bg-slate-700/50 border border-purple-600/30 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+              className="px-4 py-2 bg-white border border-gray-300 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent"
             >
               <option value="all">All Tournaments</option>
               {tournaments.map((t) => (
@@ -184,10 +184,10 @@ const Leaderboard = () => {
       </div>
 
       {/* Leaderboard Table */}
-      <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg border border-purple-700/50 overflow-y-auto flex-1 flex flex-col">
+      <div className="bg-white backdrop-blur-xl rounded-lg shadow-lg border border-gray-300 overflow-hidden flex-1 flex flex-col">
         <div className="overflow-x-auto overflow-y-auto flex-1">
           <table className="w-full">
-            <thead className="bg-gradient-to-r from-amber-600 to-orange-600 text-white sticky top-0">
+            <thead className="bg-gradient-to-r from-red-600 to-red-600 text-white sticky top-0">
               <tr>
                 <th className="px-6 py-4 text-left font-semibold">Rank</th>
                 <th className="px-6 py-4 text-left font-semibold">Player Name</th>
@@ -208,7 +208,7 @@ const Leaderboard = () => {
                     <tr
                       key={player._id}
                       className={`border-b border-purple-700/30 hover:bg-purple-700/30 transition-colors ${
-                        index < 3 ? 'bg-gradient-to-r from-amber-900/30 to-orange-900/30' : 'bg-slate-700/20'
+                        index < 3 ? 'bg-red-50' : 'bg-gray-50'
                       }`}
                     >
                       <td className={`px-6 py-4 font-bold text-center border-r border-purple-700/20`}>
@@ -220,13 +220,13 @@ const Leaderboard = () => {
                             {player.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-semibold text-amber-300">{player.name}</p>
-                            <p className="text-sm text-purple-300">{player.email}</p>
+                            <p className="font-semibold text-red-600">{player.name}</p>
+                            <p className="text-sm text-gray-600">{player.email}</p>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <span className="inline-block px-3 py-1 bg-amber-500/30 text-amber-200 rounded-full font-semibold border border-amber-500/50">
+                        <span className="inline-block px-3 py-1 bg-red-100 text-red-600 rounded-full font-semibold border border-red-300">
                           {stats.wins || 0}
                         </span>
                       </td>
@@ -237,10 +237,10 @@ const Leaderboard = () => {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <div className="flex flex-col items-center">
-                          <span className="text-lg font-bold text-amber-400">
+                          <span className="text-lg font-bold text-red-600">
                             {stats.winPercentage || 0}%
                           </span>
-                          <div className="w-16 h-2 bg-slate-700/50 rounded-full mt-1 overflow-hidden">
+                          <div className="w-16 h-2 bg-gray-200 rounded-full mt-1 overflow-hidden">
                             <div
                               className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full transition-all"
                               style={{
@@ -250,7 +250,7 @@ const Leaderboard = () => {
                           </div>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-center font-semibold text-purple-200">
+                      <td className="px-6 py-4 text-center font-semibold text-gray-700">
                         {totalMatches}
                       </td>
                     </tr>
@@ -258,7 +258,7 @@ const Leaderboard = () => {
                 })
               ) : (
                 <tr>
-                  <td colSpan="6" className="px-6 py-8 text-center text-purple-300">
+                  <td colSpan="6" className="px-6 py-8 text-center text-gray-500">
                     No players found
                   </td>
                 </tr>
@@ -272,8 +272,8 @@ const Leaderboard = () => {
       {filteredPlayers.length > 0 && (
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-64 overflow-y-auto pr-2">
           {/* Win Leaders */}
-          <div className="bg-slate-800/40 backdrop-blur-xl rounded-lg shadow-lg p-6 border border-purple-700/50">
-            <h3 className="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+          <div className="bg-white backdrop-blur-xl rounded-lg shadow-lg p-6 border border-gray-300">
+            <h3 className="text-xl font-bold text-red-600 mb-4 flex items-center gap-2">
               <span className="text-2xl">🏅</span> Most Wins
             </h3>
             <div className="space-y-3">

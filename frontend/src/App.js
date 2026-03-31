@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import ProtectedRoute from './components/ProtectedRoute';
 import ToastContainer from './components/ToastContainer';
+import { AdminOrOrganizerOnly, PlayerOnly } from './components/RoleBasedAccess';
 
 // Auth Pages
 import LoginPage from './pages/LoginPage';
@@ -13,6 +14,7 @@ import PlayerRegistration from './pages/PlayerRegistration';
 
 // Main Pages
 import Dashboard from './pages/Dashboard';
+import PlayerDashboard from './pages/PlayerDashboard';
 import PlayerManagement from './pages/PlayerManagement';
 import TournamentManagement from './pages/TournamentManagement';
 import GameTemplates from './pages/GameTemplates';
@@ -26,7 +28,7 @@ import './styles/App.css';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { initializeAuth } = useAuthStore();
+  const { user, initializeAuth } = useAuthStore();
 
   // Initialize auth from localStorage on app load
   useEffect(() => {
@@ -53,16 +55,87 @@ function App() {
                   <Navbar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
                   <main className="flex-1 overflow-auto">
                     <Routes>
-                      <Route path="/" element={<Dashboard />} />
-                      <Route path="/players" element={<PlayerManagement />} />
-                      <Route path="/teams" element={<TeamManagement />} />
-                      <Route path="/tournaments" element={<TournamentManagement />} />
-                      <Route path="/games" element={<GameTemplates />} />
-                      <Route path="/matches" element={<MatchScheduling />} />
-                      <Route path="/live-scoring" element={<LiveScoring />} />
+                      {/* Role-based dashboard routing */}
+                      <Route 
+                        path="/" 
+                        element={
+                          user?.role === 'player' ? <PlayerDashboard /> : <Dashboard />
+                        } 
+                      />
+                      
+                      {/* Admin/Organizer only routes */}
+                      <Route 
+                        path="/players" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <PlayerManagement />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/teams" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <TeamManagement />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/tournaments" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <TournamentManagement />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/games" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <GameTemplates />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/matches" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <MatchScheduling />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/live-scoring" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <LiveScoring />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      <Route 
+                        path="/analytics" 
+                        element={
+                          <AdminOrOrganizerOnly>
+                            <Analytics />
+                          </AdminOrOrganizerOnly>
+                        } 
+                      />
+                      
+                      {/* Player specific routes */}
+                      <Route 
+                        path="/my-profile" 
+                        element={
+                          <PlayerOnly>
+                            <PlayerStats />
+                          </PlayerOnly>
+                        } 
+                      />
+                      
+                      {/* Public routes for all authenticated users */}
                       <Route path="/leaderboard" element={<Leaderboard />} />
-                      <Route path="/analytics" element={<Analytics />} />
                       <Route path="/stats/:playerId" element={<PlayerStats />} />
+                      
+                      {/* Catch all */}
                       <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                   </main>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 import {
   FiHome,
   FiUsers,
@@ -11,20 +12,52 @@ import {
   FiTrendingUp,
   FiPieChart,
   FiUserPlus,
+  FiUser,
+  FiSettings,
 } from 'react-icons/fi';
 
 const Sidebar = ({ isOpen }) => {
-  const menuItems = [
+  const { user, logout, isAdmin, isOrganizer, isPlayer, canManagePlayers, canManageTournaments, canManageGames, canManageMatches } = useAuthStore();
+
+  // Admin/Organizer menu items
+  const adminMenuItems = [
     { icon: FiHome, label: 'Dashboard', path: '/' },
-    { icon: FiUsers, label: 'Players', path: '/players' },
-    { icon: FiUserPlus, label: 'Teams', path: '/teams' },
-    { icon: FiAward, label: 'Tournaments', path: '/tournaments' },
-    { icon: FiGrid, label: 'Games', path: '/games' },
-    { icon: FiCalendar, label: 'Matches', path: '/matches' },
-    { icon: FiBarChart2, label: 'Live Scoring', path: '/live-scoring' },
+    { icon: FiUsers, label: 'Players', path: '/players', requiredRole: 'managePlayers' },
+    { icon: FiUserPlus, label: 'Teams', path: '/teams', requiredRole: 'managePlayers' },
+    { icon: FiAward, label: 'Tournaments', path: '/tournaments', requiredRole: 'manageTournaments' },
+    { icon: FiGrid, label: 'Games', path: '/games', requiredRole: 'manageGames' },
+    { icon: FiCalendar, label: 'Matches', path: '/matches', requiredRole: 'manageMatches' },
+    { icon: FiBarChart2, label: 'Live Scoring', path: '/live-scoring', requiredRole: 'manageMatches' },
     { icon: FiTrendingUp, label: 'Leaderboard', path: '/leaderboard' },
     { icon: FiPieChart, label: 'Analytics', path: '/analytics' },
+    { icon: FiSettings, label: 'Settings', path: '/settings', adminOnly: true },
   ];
+
+  // Player menu items
+  const playerMenuItems = [
+    { icon: FiHome, label: 'Dashboard', path: '/' },
+    { icon: FiUser, label: 'My Profile', path: '/my-profile' },
+    { icon: FiCalendar, label: 'My Matches', path: '/my-matches' },
+    { icon: FiTrendingUp, label: 'Leaderboard', path: '/leaderboard' },
+    { icon: FiBarChart2, label: 'My Stats', path: '/my-stats' },
+  ];
+
+  // Select menu based on user role
+  const menuItems = isAdmin(user) || isOrganizer(user) ? adminMenuItems : playerMenuItems;
+
+  // Filter menu items based on permissions
+  const filteredMenuItems = menuItems.filter(item => {
+    if (item.adminOnly && !isAdmin(user)) return false;
+    if (item.requiredRole === 'managePlayers' && !canManagePlayers(user)) return false;
+    if (item.requiredRole === 'manageTournaments' && !canManageTournaments(user)) return false;
+    if (item.requiredRole === 'manageGames' && !canManageGames(user)) return false;
+    if (item.requiredRole === 'manageMatches' && !canManageMatches(user)) return false;
+    return true;
+  });
+
+  const handleLogout = async () => {
+    await logout();
+  };
 
   return (
     <aside
@@ -36,10 +69,15 @@ const Sidebar = ({ isOpen }) => {
         <h2 className={`font-black text-2xl bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent ${isOpen ? 'block' : 'hidden'} tracking-tight`}>
           LoL
         </h2>
+        {isOpen && user && (
+          <div className="mt-2 text-xs text-purple-300">
+            <span className="capitalize">{user.role}</span>
+          </div>
+        )}
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
-        {menuItems.map((item) => (
+        {filteredMenuItems.map((item) => (
           <Link
             key={item.path}
             to={item.path}
@@ -52,7 +90,10 @@ const Sidebar = ({ isOpen }) => {
       </nav>
 
       <div className="p-4 border-t border-purple-800/30 bg-gradient-to-r from-slate-950 to-purple-950/50 backdrop-blur-sm">
-        <button className="flex items-center gap-4 px-4 py-3 w-full rounded-lg hover:bg-red-900/30 transition-all duration-200 hover:text-red-400 text-purple-300 group">
+        <button 
+          onClick={handleLogout}
+          className="flex items-center gap-4 px-4 py-3 w-full rounded-lg hover:bg-red-900/30 transition-all duration-200 hover:text-red-400 text-purple-300 group"
+        >
           <FiLogOut className="text-lg flex-shrink-0 group-hover:text-red-400 transition-colors" />
           <span className={isOpen ? 'block' : 'hidden'}>Logout</span>
         </button>

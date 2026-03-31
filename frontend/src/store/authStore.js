@@ -108,6 +108,47 @@ export const useAuthStore = create((set) => ({
     return user && user.role === 'player' && !user.playerId;
   },
 
+  // Role-based access helpers
+  isAdmin: (user) => {
+    return user && user.role === 'admin';
+  },
+
+  isOrganizer: (user) => {
+    return user && user.role === 'organizer';
+  },
+
+  isPlayer: (user) => {
+    return user && user.role === 'player';
+  },
+
+  isAdminOrOrganizer: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canCreateTournament: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canManageTournaments: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canManageMatches: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canManagePlayers: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canManageGames: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
+  canViewAllData: (user) => {
+    return user && ['admin', 'organizer'].includes(user.role);
+  },
+
   // Update user in store
   setUser: (user) => {
     set({ user });

@@ -36,7 +36,7 @@ export const playerAPI = {
   getAllPlayers: () => api.get('/players'),
   getPlayerById: (id) => api.get(`/players/${id}`),
   getPlayerStats: (id) => api.get(`/players/${id}/stats`),
-  registerPlayer: (playerData) => api.post('/players', playerData),
+  registerPlayer: (playerData) => api.post('/players/register', playerData), // Updated to use self-registration endpoint
   updatePlayer: (id, playerData) => api.put(`/players/${id}`, playerData),
   deletePlayer: (id) => api.delete(`/players/${id}`),
   getLeaderboard: (limit = 10, gameId) => 

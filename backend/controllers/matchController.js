@@ -179,8 +179,10 @@ exports.scheduleMatches = async (req, res) => {
 exports.getUpcomingMatches = async (req, res) => {
   try {
     const matches = await Match.find({
-      status: { $in: ['scheduled', 'ongoing'] },
-      scheduledAt: { $gte: new Date() },
+      $or: [
+        { status: 'scheduled', scheduledAt: { $gte: new Date() } },
+        { status: 'ongoing' }
+      ]
     }).sort({ scheduledAt: 1 });
 
     res.status(200).json({ success: true, data: matches });

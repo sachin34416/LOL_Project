@@ -23,7 +23,7 @@ exports.getPlayerById = async (req, res) => {
   }
 };
 
-// Register new player
+// Register new player (handles both admin registration and self-registration)
 exports.registerPlayer = async (req, res) => {
   try {
     const { name, email, phone, avatar } = req.body;
@@ -52,8 +52,19 @@ exports.registerPlayer = async (req, res) => {
       },
     });
 
-    const savedPlayer = await player.save();
-    res.status(201).json({ success: true, data: savedPlayer });
+    await player.save();
+
+    // If this is self-registration, link player to the authenticated user
+    if (req.user) {
+      const User = require('../models/User');
+      const user = await User.findById(req.user._id);
+      if (user) {
+        user.playerId = player._id;
+        await user.save();
+      }
+    }
+
+    res.status(201).json({ success: true, data: player });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -164,6 +175,50 @@ exports.updatePlayerStats = async (req, res) => {
 
     const updatedPlayer = await player.save();
     res.status(200).json({ success: true, data: updatedPlayer });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Update player's own profile
+exports.updateMyProfile = async (req, res) => {
+  try {
+    const { name, email, phone, avatar } = req.body;
+    const userId = req.user._id; // Get user ID from authenticated middleware
+
+    // Find the user and their associated player
+    const User = require('../models/User');
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // If user has a playerId, update the player record
+    if (user.playerId) {
+      const player = await Player.findById(user.playerId);
+      if (player) {
+        if (name) player.name = name;
+        if (email) player.email = email;
+        if (phone) player.phone = phone;
+        if (avatar) player.avatar = avatar;
+        await player.save();
+      }
+    }
+
+    // Update user record
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+    if (avatar) user.avatar = avatar;
+    
+    await user.save();
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Profile updated successfully',
+      data: user.toJSON() 
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -1,15 +1,21 @@
 const express = require('express');
 const router = express.Router();
 const tournamentController = require('../controllers/tournamentController');
+const { verifyToken, isAdminOrOrganizer } = require('../middleware/auth');
 
-router.get('/', tournamentController.getAllTournaments);
-router.get('/:id', tournamentController.getTournamentById);
-router.get('/:id/standings', tournamentController.getTournamentStandings);
-router.post('/', tournamentController.createTournament);
-router.put('/:id', tournamentController.updateTournament);
-router.put('/:id/standings', tournamentController.updateStandings);
-router.post('/:id/register-team', tournamentController.registerTeamToTournament);
-router.delete('/:id/remove-team', tournamentController.removeTeamFromTournament);
-router.delete('/:id', tournamentController.deleteTournament);
+// Public routes (read access for authenticated users)
+router.get('/', verifyToken, tournamentController.getAllTournaments);
+router.get('/:id', verifyToken, tournamentController.getTournamentById);
+router.get('/:id/standings', verifyToken, tournamentController.getTournamentStandings);
+
+// Admin/Organizer only routes
+router.post('/', verifyToken, isAdminOrOrganizer, tournamentController.createTournament);
+router.put('/:id', verifyToken, isAdminOrOrganizer, tournamentController.updateTournament);
+router.put('/:id/standings', verifyToken, isAdminOrOrganizer, tournamentController.updateStandings);
+router.post('/:id/register-team', verifyToken, isAdminOrOrganizer, tournamentController.registerTeamToTournament);
+router.post('/:id/register-player', verifyToken, isAdminOrOrganizer, tournamentController.registerPlayerToTournament);
+router.delete('/:id/remove-team', verifyToken, isAdminOrOrganizer, tournamentController.removeTeamFromTournament);
+router.post('/:id/remove-player', verifyToken, isAdminOrOrganizer, tournamentController.removePlayerFromTournament);
+router.delete('/:id', verifyToken, isAdminOrOrganizer, tournamentController.deleteTournament);
 
 module.exports = router;

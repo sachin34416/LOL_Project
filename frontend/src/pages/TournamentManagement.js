@@ -5,8 +5,11 @@ import { useTeamStore } from '../store/teamStore';
 import { tournamentAPI, gameAPI } from '../services/api';
 import { FiPlus, FiEdit2, FiTrash2, FiUsers } from 'react-icons/fi';
 import useToastStore from '../store/toastStore';
+import { AdminOrOrganizerOnly, useRoleAccess } from '../components/RoleBasedAccess';
 
 const TournamentManagement = () => {
+  const { canManageTournaments } = useRoleAccess();
+  
   const tournaments = useTournamentStore((state) => state.tournaments);
   const fetchAllTournaments = useTournamentStore((state) => state.fetchAllTournaments);
   const addTournament = useTournamentStore((state) => state.addTournament);
@@ -125,12 +128,18 @@ const TournamentManagement = () => {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">Tournament Management</h1>
           <p className="text-purple-200 mt-2">Create and manage tournaments</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 flex items-center gap-2 shadow-lg transition-all hover:shadow-2xl"
-        >
-          <FiPlus /> Create Tournament
-        </button>
+        <AdminOrOrganizerOnly fallback={
+          <div className="text-purple-400 text-sm">
+            Only admins and organizers can create tournaments
+          </div>
+        }>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg hover:from-amber-600 hover:to-orange-600 flex items-center gap-2 shadow-lg transition-all hover:shadow-2xl"
+          >
+            <FiPlus /> Create Tournament
+          </button>
+        </AdminOrOrganizerOnly>
       </div>
 
       {/* Tournaments Grid */}
